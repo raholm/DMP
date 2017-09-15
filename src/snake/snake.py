@@ -68,6 +68,58 @@ class Snake(object):
 					self.nextDir.appendleft(Direction.West)
 
 
+class Board(object):
+	def __init__(self, rows, cols):
+		self.board = [[GridType.Empty] * cols for _ in range(rows)]
+
+	@property
+	def rows(self):
+		return len(self.board)
+
+	@property
+	def cols(self):
+		return len(self.board[0])
+
+	def __setitem__(self, index, value):
+		self.board[index[0]][index[1]] = value
+
+	def __getitem__(self, index):
+		return self.board[index[0]][index[1]]
+
+
+class Environment(object):
+	def __init__(self, rows, cols):
+		self.snake = None
+		self.food = None
+		self.board = Board(rows, cols)
+
+	def add_food(self):
+		while True:
+			food = random.randrange(BOARD_LENGTH), random.randrange(BOARD_LENGTH)
+			if not (self.board[food[0], food[1]] == GridType.Snake or
+							self.board[food[0], food[1]] == GridType.Food):
+				break
+		self.board[food[0], food[1]] = GridType.Food
+		return food
+
+	def is_dead(self):
+		if (self.snake[0] < 0 or self.snake[0] >= self.rows) or \
+				(self.snake[1] < 0 or self.snake[1] >= self.cols):
+			return True
+		if self.board[self.snake[0], self.snake[1]] == GridType.Snake:
+			return True
+		return False
+
+	def restart(self):
+		raise NotImplementedError
+
+	def update(self):
+		raise NotImplementedError
+
+	def render(self):
+		raise NotImplementedError
+
+
 def find_food(spots):
 	while True:
 		food = random.randrange(BOARD_LENGTH), random.randrange(BOARD_LENGTH)
