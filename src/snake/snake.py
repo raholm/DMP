@@ -8,9 +8,10 @@ BOARD_LENGTH = 32
 OFFSET = 16
 
 
-class Parameters(Enum):
-	BoardLength = 32
-	Offset = 16
+class Parameters(object):
+	def __int__(self):
+		self.board_length = 32
+		self.offset = 16
 
 
 class Color(Enum):
@@ -199,9 +200,11 @@ def move(snake):
 		next_dir = snake.nextDir.pop()
 	else:
 		next_dir = snake.direction
+
 	head = snake.deque.pop()
 	snake.deque.append(head)
 	next_move = head
+
 	if next_dir == Direction.North:
 		if snake.direction != Direction.South:
 			next_move = (head[0] - 1, head[1], snake.get_color())
