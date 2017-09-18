@@ -2,16 +2,23 @@ from collections import deque
 from enum import Enum
 
 import random
+from pygame import rect
+
 import pygame
 
-BOARD_LENGTH = 32
-OFFSET = 16
 
+class SnakeParameters(object):
+	def __init__(self):
+		# Board Related
+		self.rows = 32
+		self.cols = 32
+		self.cell_size = 16
 
-class Parameters(object):
-	def __int__(self):
-		self.board_length = 32
-		self.offset = 16
+		# Snake Related
+		self.initial_snake_size = 4
+		self.initial_snake_position = (0, 0)
+		self.initial_snake_direction = Direction.East
+		self.tail_size_increase = 4
 
 
 class Color(Enum):
@@ -35,37 +42,92 @@ class Direction(Enum):
 	East = 3
 
 
-def snake_color():
-	return Color.Green.value
+class Action(Enum):
+	North = 0
+	South = 1
+	West = 2
+	East = 3
 
 
-def food_color():
-	return Color.Red.value
-
-
-class Snake(object):
-	def __init__(self, direction=Direction.East, point=(0, 0, snake_color())):
-		self.tailmax = 4
-		self.direction = direction
-		self.deque = deque()
-		self.deque.append(point)
-		self.color = snake_color()
-		self.nextDir = deque()
-
-	def get_color(self):
-		return self.color
-
-	def populate_next_dir(self, events):
+class Player(object):
+	def get_action(self, events):
 		for event in events:
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_UP:
-					self.nextDir.appendleft(Direction.North)
+					self.next_dir.appendleft(Direction.North)
 				elif event.key == pygame.K_DOWN:
-					self.nextDir.appendleft(Direction.South)
+					self.next_dir.appendleft(Direction.South)
 				elif event.key == pygame.K_RIGHT:
-					self.nextDir.appendleft(Direction.East)
+					self.next_dir.appendleft(Direction.East)
 				elif event.key == pygame.K_LEFT:
-					self.nextDir.appendleft(Direction.West)
+					self.next_dir.appendleft(Direction.West)
+
+
+class Snake(object):
+	def __init__(self, direction=Direction.East, head=(0, 0)):
+		self.tail_size = 4
+		self.direction = direction
+		self.body = deque()
+		self.body.append(head)
+		self.next_dir = deque()
+
+	@property
+	def head(self):
+		return self.body[0]
+
+	def update(self, action):
+		self.__update_direction(action)
+		self.__update_body()
+
+	def __update_direction(self, action):
+		if action == Action.North:
+			self.next_dir.appendleft(Direction.North)
+		elif action == Action.South:
+			self.next_dir.appendleft(Direction.South)
+		elif action == Action.East:
+			self.next_dir.appendleft(Direction.East)
+		elif action == Action.West:
+			self.next_dir.appendleft(Direction.West)
+
+	def __update_body(self):
+		if len(self.next_dir) != 0:
+			next_dir = self.next_dir.pop()
+		else:
+			next_dir = self.direction
+
+		# head = self.deque.pop()
+		# self.deque.append(head)
+		next_move = self.head
+
+		if next_dir == Direction.North:
+			if self.direction != Direction.South:
+				next_move = (self.head[0] - 1, self.head[1])
+				self.direction = next_dir
+			else:
+				next_move = (self.head[0] + 1, self.head[1])
+		elif next_dir == Direction.South:
+			if self.direction != Direction.North:
+				next_move = (self.head[0] + 1, self.head[1])
+				self.direction = next_dir
+			else:
+				next_move = (self.head[0] - 1, self.head[1])
+		elif next_dir == Direction.West:
+			if self.direction != Direction.East:
+				next_move = (self.head[0], self.head[1] - 1)
+				self.direction = next_dir
+			else:
+				next_move = (self.head[0], self.head[1] + 1)
+		elif next_dir == Direction.East:
+			if self.direction != Direction.West:
+				next_move = (self.head[0], self.head[1] + 1)
+				self.direction = next_dir
+			else:
+				next_move = (self.head[0], self.head[1] - 1)
+
+		self.body.append(next_move)
+
+		if len(self.body) > self.tail_size:
+			self.body.popleft()
 
 
 class Board(object):
@@ -87,133 +149,97 @@ class Board(object):
 		return self.board[index[0]][index[1]]
 
 
-class Environment(object):
-	def __init__(self, rows, cols):
-		self.snake = None
+class SnakeEnvironment(object):
+	def __init__(self, params):
+		self.snake = Snake(head=params.initial_snake_position,
+						   direction=params.initial_snake_direction)
 		self.food = None
-		self.board = Board(rows, cols)
+		self.board = Board(params.rows, params.cols)
+		self.food_count = 0
 
-	def add_food(self):
-		while True:
-			food = random.randrange(BOARD_LENGTH), random.randrange(BOARD_LENGTH)
-			if not (self.board[food[0], food[1]] == GridType.Snake or
-							self.board[food[0], food[1]] == GridType.Food):
-				break
-		self.board[food[0], food[1]] = GridType.Food
-		return food
+		self.__update_board()
 
-	def is_dead(self):
-		if (self.snake[0] < 0 or self.snake[0] >= self.rows) or \
-				(self.snake[1] < 0 or self.snake[1] >= self.cols):
+	def update(self, action):
+		self.snake.update(action)
+
+		if self.__is_dead():
+			return self.food_count
+
+		if self.__got_food():
+			self.food_count += 1
+			self.__update_food()
+
+		self.__update_board()
+
+	def __is_dead(self):
+		# Snake is outside board
+		if (self.snake.head[0] < 0 or self.snake.head[0] >= self.board.rows) or \
+				(self.snake.head[1] < 0 or self.snake.head[1] >= self.board.cols):
 			return True
-		if self.board[self.snake[0], self.snake[1]] == GridType.Snake:
+		# Snake is colliding with itself
+		if self.board[self.snake.head[0], self.snake.head[1]] == GridType.Snake:
 			return True
 		return False
 
-	def restart(self):
-		raise NotImplementedError
+	def __got_food(self):
+		return self.board[self.snake.head] == GridType.Food
 
-	def update(self):
-		raise NotImplementedError
+	def __update_food(self):
+		while True:
+			food = random.randrange(self.board.rows), random.randrange(self.board.cols)
+			if not (self.board[food[0], food[1]] == GridType.Snake or
+							self.board[food[0], food[1]] == GridType.Food):
+				break
+
+		self.food = food
+
+	def __update_board(self):
+		for row in range(self.board.rows):
+			for col in range(self.board.cols):
+				self.board[row, col] = GridType.Empty
+
+		if self.food is not None:
+			self.board[self.food] = GridType.Food
+
+		for body_part in self.snake.body:
+			self.board[body_part] = GridType.Snake
+
+
+class SnakeRenderer(object):
+	def __init__(self, env, params):
+		self.env = env
+		self.params = params
+		self.screen = None
+
+	def init(self):
+		pygame.init()
+		self.screen = pygame.display.set_mode([self.params.rows * self.params.cell_size,
+											   self.params.cols * self.params.cell_size])
+		pygame.display.set_caption("Snake")
+		pygame.draw.rect(self.screen, Color.Black.value, pygame.Rect(50, 50, 10, 10))
+
+	def quit(self):
+		pygame.quit()
 
 	def render(self):
-		raise NotImplementedError
+		self.screen.fill(Color.Black.value)
 
+		rect = pygame.Rect(0, 0, self.params.cell_size, self.params.cell_size)
 
-def find_food(spots):
-	while True:
-		food = random.randrange(BOARD_LENGTH), random.randrange(BOARD_LENGTH)
-		if not (spots[food[0]][food[1]] == GridType.Snake or spots[food[0]][food[1]] == GridType.Food):
-			break
-	return food
+		for row in range(self.params.rows):
+			for col in range(self.params.cols):
+				moved_rect = rect.move(row * self.params.cell_size, col * self.params.cell_size)
 
+				if self.env.board[row, col] == GridType.Snake:
+					color = Color.Green.value
+				elif self.env.board[row, col] == GridType.Food:
+					color = Color.Red.value
+				else:
+					color = Color.Black.value
 
-def end_condition(board, coord):
-	if (coord[0] < 0 or
-				coord[0] >= BOARD_LENGTH or
-				coord[1] < 0 or
-				coord[1] >= BOARD_LENGTH):
-		return True
-	if board[coord[0]][coord[1]] == GridType.Snake:
-		return True
-	return False
+				pygame.draw.rect(self.screen, color, moved_rect)
 
-
-def make_board():
-	return [[GridType.Empty] * BOARD_LENGTH for _ in range(BOARD_LENGTH)]
-
-
-def update_board(screen, snakes, food):
-	rect = pygame.Rect(0, 0, OFFSET, OFFSET)
-	spots = [[0] * BOARD_LENGTH for _ in range(BOARD_LENGTH)]
-
-	# Draw background
-	num1 = 0
-	num2 = 0
-	for _ in spots:
-		for _ in range(BOARD_LENGTH):
-			temprect = rect.move(num1 * OFFSET, num2 * OFFSET)
-			pygame.draw.rect(screen, Color.Black.value, temprect)
-			num2 += 1
-		num1 += 1
-
-	# Draw food
-	spots[food[0]][food[1]] = GridType.Food
-	temprect = rect.move(food[1] * OFFSET, food[0] * OFFSET)
-	pygame.draw.rect(screen, food_color(), temprect)
-
-	# Draw snake
-	for snake in snakes:
-		for coord in snake.deque:
-			spots[coord[0]][coord[1]] = GridType.Snake
-			temprect = rect.move(coord[1] * OFFSET, coord[0] * OFFSET)
-			pygame.draw.rect(screen, coord[2], temprect)
-
-	return spots
-
-
-def get_color(s):
-	if s == "bk":
-		return Color.Black.value
-	elif s == "wh":
-		return Color.White.value
-	elif s == "rd":
-		return Color.Red.value
-	elif s == "bl":
-		return Color.Blue.value
-	elif s == "fo":
-		return food_color()
-	else:
-		print("WHAT", s)
-		return Color.Blue.value
-
-
-def update_board_delta(screen, deltas):
-	# accepts a queue of deltas in the form
-	# [("d", 13, 30), ("a", 4, 6, "rd")]
-	# valid colors: re, wh, bk, bl
-	rect = pygame.Rect(0, 0, OFFSET, OFFSET)
-	change_list = []
-	delqueue = deque()
-	addqueue = deque()
-	while len(deltas) != 0:
-		d = deltas.pop()
-		change_list.append(pygame.Rect(d[1], d[2], OFFSET, OFFSET))
-		if d[0] == "d":
-			delqueue.append((d[1], d[2]))
-		elif d[0] == "a":
-			addqueue.append((d[1], d[2], get_color(d[3])))
-
-	for d_coord in delqueue:
-		temprect = rect.move(d_coord[1] * OFFSET, d_coord[0] * OFFSET)
-		# TODO generalize background color
-		pygame.draw.rect(screen, Color.Black.value, temprect)
-
-	for a_coord in addqueue:
-		temprect = rect.move(a_coord[1] * OFFSET, a_coord[0] * OFFSET)
-		pygame.draw.rect(screen, a_coord[2], temprect)
-
-	return change_list
+		pygame.display.update()
 
 
 # Return 0 to exit the program, 1 for a one-player game
@@ -248,8 +274,8 @@ def quit(screen):
 
 
 def move(snake):
-	if len(snake.nextDir) != 0:
-		next_dir = snake.nextDir.pop()
+	if len(snake.next_dir) != 0:
+		next_dir = snake.next_dir.pop()
 	else:
 		next_dir = snake.direction
 
@@ -259,33 +285,29 @@ def move(snake):
 
 	if next_dir == Direction.North:
 		if snake.direction != Direction.South:
-			next_move = (head[0] - 1, head[1], snake.get_color())
+			next_move = (head[0] - 1, head[1])
 			snake.direction = next_dir
 		else:
-			next_move = (head[0] + 1, head[1], snake.get_color())
+			next_move = (head[0] + 1, head[1])
 	elif next_dir == Direction.South:
 		if snake.direction != Direction.North:
-			next_move = (head[0] + 1, head[1], snake.get_color())
+			next_move = (head[0] + 1, head[1])
 			snake.direction = next_dir
 		else:
-			next_move = (head[0] - 1, head[1], snake.get_color())
+			next_move = (head[0] - 1, head[1])
 	elif next_dir == Direction.West:
 		if snake.direction != Direction.East:
-			next_move = (head[0], head[1] - 1, snake.get_color())
+			next_move = (head[0], head[1] - 1)
 			snake.direction = next_dir
 		else:
-			next_move = (head[0], head[1] + 1, snake.get_color())
+			next_move = (head[0], head[1] + 1)
 	elif next_dir == Direction.East:
 		if snake.direction != Direction.West:
-			next_move = (head[0], head[1] + 1, snake.get_color())
+			next_move = (head[0], head[1] + 1)
 			snake.direction = next_dir
 		else:
-			next_move = (head[0], head[1] - 1, snake.get_color())
+			next_move = (head[0], head[1] - 1)
 	return next_move
-
-
-def is_food(board, point):
-	return board[point[0]][point[1]] == GridType.Food
 
 
 # Return false to quit program, true to go to
@@ -317,16 +339,16 @@ def one_player(screen):
 		# Game logic
 		next_head = move(snake)
 		if end_condition(spots, next_head):
-			return snake.tailmax
+			return snake.tail_size
 
 		if is_food(spots, next_head):
-			snake.tailmax += 4
+			snake.tail_size += 4
 			food = find_food(spots)
 
-		snake.deque.append(next_head)
+		snake.body.append(next_head)
 
-		if len(snake.deque) > snake.tailmax:
-			snake.deque.popleft()
+		if len(snake.body) > snake.tail_size:
+			snake.body.popleft()
 
 		# Draw code
 		screen.fill(Color.Black.value)  # makes screen Color.Black
@@ -402,29 +424,40 @@ def leaderboard(screen):
 					return True
 
 
+# def main():
+# 	pygame.init()
+# 	screen = pygame.display.set_mode([BOARD_LENGTH * OFFSET, BOARD_LENGTH * OFFSET])
+# 	pygame.display.set_caption("Snake")
+# 	pygame.draw.rect(screen, pygame.Color(255, 255, 255, 255), pygame.Rect(50, 50, 10, 10))
+# 	first = True
+# 	playing = True
+# 	while playing:
+# 		if first or pick == 3:
+# 			pick = menu(screen)
+#
+# 		options = {0: quit,
+# 				   1: one_player,
+# 				   2: leaderboard}
+# 		now = options[pick](screen)
+# 		if not now:
+# 			break
+# 		elif pick == 1 or pick == 2:
+# 			eaten = now / 4 - 1
+# 			playing = game_over(screen, eaten)
+# 			first = False
+#
+# 	pygame.quit()
+
 def main():
-	pygame.init()
-	screen = pygame.display.set_mode([BOARD_LENGTH * OFFSET, BOARD_LENGTH * OFFSET])
-	pygame.display.set_caption("Snake")
-	pygame.draw.rect(screen, pygame.Color(255, 255, 255, 255), pygame.Rect(50, 50, 10, 10))
-	first = True
-	playing = True
-	while playing:
-		if first or pick == 3:
-			pick = menu(screen)
+	params = SnakeParameters()
+	env = SnakeEnvironment(params)
+	renderer = SnakeRenderer(env, params)
 
-		options = {0: quit,
-				   1: one_player,
-				   2: leaderboard}
-		now = options[pick](screen)
-		if not now:
-			break
-		elif pick == 1 or pick == 2:
-			eaten = now / 4 - 1
-			playing = game_over(screen, eaten)
-			first = False
+	renderer.init()
 
-	pygame.quit()
+	renderer.render()
+
+	renderer.quit()
 
 
 if __name__ == "__main__":
