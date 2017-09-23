@@ -1,22 +1,7 @@
 from collections import deque
 from enum import Enum
 
-import pygame
 import random
-
-
-class SnakeParameters(object):
-	def __init__(self):
-		# Board Related
-		self.rows = 32
-		self.cols = 32
-		self.cell_size = 16
-
-		# Snake Related
-		self.initial_snake_size = 4
-		self.initial_snake_position = (0, 0)
-		self.initial_snake_direction = Direction.East
-		self.tail_size_increase = 4
 
 
 class Color(Enum):
@@ -48,25 +33,34 @@ class Action(Enum):
 	Quit = 4
 
 
-class Player(object):
-	def get_action(self):
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				return Action.Quit
-			elif event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_UP:
-					return Action.North
-				elif event.key == pygame.K_DOWN:
-					return Action.South
-				elif event.key == pygame.K_RIGHT:
-					return Action.East
-				elif event.key == pygame.K_LEFT:
-					return Action.West
+class SnakeParameters(object):
+	def __init__(self):
+		# Game Related
+		self.update_rate = 100
+
+		# Board Related
+		self.rows = 32
+		self.cols = 32
+		self.cell_size = 16
+
+		# Snake Related
+		self.initial_snake_size = 4
+		self.initial_snake_position = (0, 0)
+		self.initial_snake_direction = Direction.East
+		self.tail_size_increase = 4
+
+
+class Agent(object):
+	pass
+
+
+class Environment(object):
+	pass
 
 
 class Snake(object):
-	def __init__(self, direction, head, tail_increase):
-		self.tail_size = tail_increase
+	def __init__(self, size, direction, head, tail_increase):
+		self.tail_size = size
 		self.tail_increase = tail_increase
 		self.direction = direction
 		self.body = deque()
@@ -97,8 +91,6 @@ class Snake(object):
 		else:
 			next_dir = self.direction
 
-		# head = self.body.pop()
-		# self.body.append(head)
 		next_move = None
 
 		if next_dir == Direction.North:
@@ -126,7 +118,8 @@ class Snake(object):
 			else:
 				next_move = (self.head[0] - 1, self.head[1])
 
-		self.body.append(next_move)
+		if next_move is not None:
+			self.body.append(next_move)
 
 		if len(self.body) > self.tail_size:
 			self.body.popleft()
@@ -154,9 +147,10 @@ class Board(object):
 		return self.board[index[0]][index[1]]
 
 
-class SnakeEnvironment(object):
+class SnakeEnvironment(Environment):
 	def __init__(self, params):
-		self.snake = Snake(head=params.initial_snake_position,
+		self.snake = Snake(size=params.initial_snake_size,
+						   head=params.initial_snake_position,
 						   direction=params.initial_snake_direction,
 						   tail_increase=params.tail_size_increase)
 		self.food = None
@@ -214,71 +208,3 @@ class SnakeEnvironment(object):
 
 		for body_part in self.snake.body:
 			self.board[body_part] = GridType.Snake
-
-
-class SnakeRenderer(object):
-	def __init__(self, env, params):
-		self.env = env
-		self.params = params
-		self.screen = None
-
-	def init(self):
-		pygame.init()
-		self.screen = pygame.display.set_mode([self.params.rows * self.params.cell_size,
-											   self.params.cols * self.params.cell_size])
-		pygame.display.set_caption("Snake")
-		pygame.draw.rect(self.screen, Color.Black.value, pygame.Rect(50, 50, 10, 10))
-		self.render()
-
-	def quit(self):
-		pygame.quit()
-
-	def render(self):
-		self.screen.fill(Color.Black.value)
-
-		rect = pygame.Rect(0, 0, self.params.cell_size, self.params.cell_size)
-
-		for row in range(self.params.rows):
-			for col in range(self.params.cols):
-				moved_rect = rect.move(row * self.params.cell_size, col * self.params.cell_size)
-
-				if self.env.board[row, col] == GridType.Snake:
-					color = Color.Green.value
-				elif self.env.board[row, col] == GridType.Food:
-					color = Color.Red.value
-				else:
-					color = Color.Black.value
-
-				pygame.draw.rect(self.screen, color, moved_rect)
-
-		pygame.display.update()
-
-
-def main():
-	clock = pygame.time.Clock()
-
-	params = SnakeParameters()
-	env = SnakeEnvironment(params)
-	renderer = SnakeRenderer(env, params)
-	player = Player()
-
-	renderer.init()
-
-	while True:
-		clock.tick(15)
-
-		action = player.get_action()
-
-		if action == Action.Quit:
-			break
-
-		if not env.update(action):
-			break
-
-		renderer.render()
-
-	renderer.quit()
-
-
-if __name__ == "__main__":
-	main()
