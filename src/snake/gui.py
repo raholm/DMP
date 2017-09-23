@@ -2,7 +2,6 @@ import sys
 
 from PyQt5.QtCore import Qt, pyqtSlot, QBasicTimer
 from PyQt5.QtGui import QPainter, QColor
-from PyQt5.QtOpenGL import QGLWidget
 from PyQt5.QtWidgets import *
 
 from src.snake.logic import SnakeParameters, SnakeEnvironment, Player, GridType, Color, Action
@@ -45,7 +44,7 @@ class AgentWidget(QWidget):
 class PlayerWidget(AgentWidget):
 	def __init__(self, parent=None):
 		super().__init__(parent)
-		self.action = Action.East
+		self.action = None
 
 	def keyPressEvent(self, event):
 		if event.key() == Qt.Key_Up:
@@ -113,53 +112,129 @@ class Window(QMainWindow):
 
 		self.env = env
 		self.params = params
+		self.is_running = True
 
 		self.timer = QBasicTimer()
 		self.timer.start(params.update_rate, self)
+
+		self.center()
 		self.update()
 
 	def keyPressEvent(self, event):
 		self.agent_widget.keyPressEvent(event)
 
+	def timerEvent(self, event):
+		if not self.is_running:
+			self.timer.stop()
+
+		if event.timerId() == self.timer.timerId():
+			self.is_running = self.env.update(self.agent_widget.action)
+			self.repaint()
+
+	def center(self):
+		frame_gm = self.frameGeometry()
+		screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+		center_point = QApplication.desktop().screenGeometry(screen).center()
+		frame_gm.moveCenter(center_point)
+		self.move(frame_gm.topLeft())
+
 	def __create_menu(self):
 		create_action = QAction("&Create", self)
 		create_action.setShortcut("Ctrl+C")
 		create_action.setStatusTip('Create Agent')
-		create_action.triggered.connect(self.on_push_create)
+		create_action.triggered.connect(self.__on_push_create)
 
-		save_action = QAction("&Save", self)
-		save_action.setShortcut("Ctrl+S")
-		save_action.setStatusTip('Save Agent')
-		save_action.triggered.connect(self.close_application)
+		import_action = QAction("&Import", self)
+		import_action.setShortcut("Ctrl+I")
+		import_action.setStatusTip('Import Agent')
+		import_action.triggered.connect(self.__on_push_import)
 
-		load_action = QAction("&Load", self)
-		load_action.setShortcut("Ctrl+L")
-		load_action.setStatusTip('Load Agent')
-		load_action.triggered.connect(self.close_application)
+		export_action = QAction("&Export", self)
+		export_action.setShortcut("Ctrl+L")
+		export_action.setStatusTip('Export Agent')
+		export_action.triggered.connect(self.__on_push_export)
 
 		quit_action = QAction("&Quit", self)
 		quit_action.setShortcut("Ctrl+Q")
-		quit_action.setStatusTip('Quit Agent')
-		quit_action.triggered.connect(self.close_application)
+		quit_action.setStatusTip('Quit Application')
+		quit_action.triggered.connect(self.__on_push_quit)
+
+		run_action = QAction("&Run", self)
+		run_action.setShortcut("Ctrl+R")
+		run_action.setStatusTip('Run Agent')
+		run_action.triggered.connect(self.__on_push_run)
+
+		train_action = QAction("&Train", self)
+		train_action.setShortcut("Ctrl+T")
+		train_action.setStatusTip('Train Agent')
+		train_action.triggered.connect(self.__on_push_train)
+
+		reward_stat_action = QAction("&Reward", self)
+		reward_stat_action.setStatusTip('Rewards Over Time')
+		reward_stat_action.triggered.connect(self.__on_push_reward_stat)
+
+		action_stat_action = QAction("&Action", self)
+		action_stat_action.setStatusTip('Actions Over Episodes')
+		action_stat_action.triggered.connect(self.__on_push_action_stat)
+
+		exploration_exploitation_stat_exploration_exploitation = QAction("&Exploration/Exploitation", self)
+		exploration_exploitation_stat_exploration_exploitation.setStatusTip(
+			'Exploration/Exploitation Percentages Over Episodes')
+		exploration_exploitation_stat_exploration_exploitation.triggered.connect(
+			self.__on_push_exploration_exploitation_stat)
 
 		main_menu = self.menuBar()
-		file_menu = main_menu.addMenu('&File')
+		file_menu = main_menu.addMenu("&File")
 		file_menu.addAction(create_action)
-		file_menu.addAction(save_action)
-		file_menu.addAction(load_action)
+		file_menu.addAction(import_action)
+		file_menu.addAction(export_action)
 		file_menu.addAction(quit_action)
 
-	@pyqtSlot()
-	def on_push_create(self):
-		self.create_widget.show()
+		file_menu = main_menu.addMenu("&Agent")
+		file_menu.addAction(run_action)
+		file_menu.addAction(train_action)
 
-	def close_application(self):
+		file_menu = main_menu.addMenu("&Stats")
+		file_menu.addAction(reward_stat_action)
+		file_menu.addAction(action_stat_action)
+		file_menu.addAction(exploration_exploitation_stat_exploration_exploitation)
+
+	@pyqtSlot()
+	def __on_push_create(self):
+		# self.create_widget.show()
+		print("Create Agent")
+
+	@pyqtSlot()
+	def __on_push_import(self):
+		print("Import Agent")
+
+	@pyqtSlot()
+	def __on_push_export(self):
+		print("Export Agent")
+
+	@pyqtSlot()
+	def __on_push_quit(self):
 		sys.exit()
 
-	def timerEvent(self, event):
-		if event.timerId() == self.timer.timerId():
-			self.env.update(self.agent_widget.action)
-			self.repaint()
+	@pyqtSlot()
+	def __on_push_run(self):
+		print("Run Agent")
+
+	@pyqtSlot()
+	def __on_push_train(self):
+		print("Train Agent")
+
+	@pyqtSlot()
+	def __on_push_reward_stat(self):
+		print("Reward Stat")
+
+	@pyqtSlot()
+	def __on_push_action_stat(self):
+		print("Action Stat")
+
+	@pyqtSlot()
+	def __on_push_exploration_exploitation_stat(self):
+		print("Exploration/Exploitation Stat")
 
 
 if __name__ == '__main__':

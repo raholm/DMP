@@ -54,6 +54,10 @@ class Agent(object):
 	pass
 
 
+class Player(Agent):
+	pass
+
+
 class Environment(object):
 	pass
 
