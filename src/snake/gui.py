@@ -4,7 +4,8 @@ from PyQt5.QtCore import Qt, pyqtSlot, QBasicTimer
 from PyQt5.QtGui import QPainter, QColor
 from PyQt5.QtWidgets import *
 
-from src.snake.logic import SnakeParameters, SnakeEnvironment, Player, GridType, Color, Action
+from src.snake.logic import SnakeParameters, SnakeEnvironment, Player, SnakeGridType, SnakeAction
+from src.util.color import Color
 
 
 class GameWidget(QWidget):
@@ -24,9 +25,9 @@ class GameWidget(QWidget):
 				x = row * width
 				y = col * height
 
-				if self.env.board[row, col] == GridType.Snake:
+				if self.env.board[row, col] == SnakeGridType.Snake:
 					color = Color.Green.value
-				elif self.env.board[row, col] == GridType.Food:
+				elif self.env.board[row, col] == SnakeGridType.Food:
 					color = Color.Red.value
 				else:
 					color = Color.Black.value
@@ -48,13 +49,13 @@ class PlayerWidget(AgentWidget):
 
 	def keyPressEvent(self, event):
 		if event.key() == Qt.Key_Up:
-			self.action = Action.North
+			self.action = SnakeAction.North
 		elif event.key() == Qt.Key_Down:
-			self.action = Action.South
+			self.action = SnakeAction.South
 		elif event.key() == Qt.Key_Left:
-			self.action = Action.West
+			self.action = SnakeAction.West
 		elif event.key() == Qt.Key_Right:
-			self.action = Action.East
+			self.action = SnakeAction.East
 
 
 class CreateWidget(QWidget):
@@ -100,7 +101,7 @@ class Window(QMainWindow):
 	def __init__(self, env, params):
 		super().__init__()
 		self.setGeometry(50, 50, params.rows * params.cell_size, params.cols * params.cell_size)
-		self.setWindowTitle("SnakeBot!")
+		self.setWindowTitle("SnakeBot")
 
 		self.game_widget = GameWidget(env, params, self)
 		self.setCentralWidget(self.game_widget)

@@ -1,31 +1,27 @@
+import random
+
 from collections import deque
 from enum import Enum
 
-import random
+from src.core.action import Action
+from src.core.agent import Agent
+from src.core.environment import Environment
 
 
-class Color(Enum):
-	White = (255, 255, 255)
-	Black = (0, 0, 0)
-	Red = (255, 0, 0)
-	Green = (0, 255, 0)
-	Blue = (0, 0, 255)
-
-
-class GridType(Enum):
+class SnakeGridType(Enum):
 	Empty = 0
 	Snake = 1
 	Food = 2
 
 
-class Direction(Enum):
+class SnakeDirection(Enum):
 	North = 0
 	South = 1
 	West = 2
 	East = 3
 
 
-class Action(Enum):
+class SnakeAction(Action, Enum):
 	North = 0
 	South = 1
 	West = 2
@@ -46,19 +42,11 @@ class SnakeParameters(object):
 		# Snake Related
 		self.initial_snake_size = 4
 		self.initial_snake_position = (0, 0)
-		self.initial_snake_direction = Direction.East
+		self.initial_snake_direction = SnakeDirection.East
 		self.tail_size_increase = 4
 
 
-class Agent(object):
-	pass
-
-
 class Player(Agent):
-	pass
-
-
-class Environment(object):
 	pass
 
 
@@ -80,14 +68,14 @@ class Snake(object):
 		self.__update_body()
 
 	def __update_direction(self, action):
-		if action == Action.North:
-			self.next_dir.appendleft(Direction.North)
-		elif action == Action.South:
-			self.next_dir.appendleft(Direction.South)
-		elif action == Action.East:
-			self.next_dir.appendleft(Direction.East)
-		elif action == Action.West:
-			self.next_dir.appendleft(Direction.West)
+		if action == SnakeAction.North:
+			self.next_dir.appendleft(SnakeDirection.North)
+		elif action == SnakeAction.South:
+			self.next_dir.appendleft(SnakeDirection.South)
+		elif action == SnakeAction.East:
+			self.next_dir.appendleft(SnakeDirection.East)
+		elif action == SnakeAction.West:
+			self.next_dir.appendleft(SnakeDirection.West)
 
 	def __update_body(self):
 		if len(self.next_dir) != 0:
@@ -97,26 +85,26 @@ class Snake(object):
 
 		next_move = None
 
-		if next_dir == Direction.North:
-			if self.direction != Direction.South:
+		if next_dir == SnakeDirection.North:
+			if self.direction != SnakeDirection.South:
 				next_move = (self.head[0], self.head[1] - 1)
 				self.direction = next_dir
 			else:
 				next_move = (self.head[0], self.head[1] + 1)
-		elif next_dir == Direction.South:
-			if self.direction != Direction.North:
+		elif next_dir == SnakeDirection.South:
+			if self.direction != SnakeDirection.North:
 				next_move = (self.head[0], self.head[1] + 1)
 				self.direction = next_dir
 			else:
 				next_move = (self.head[0], self.head[1] - 1)
-		elif next_dir == Direction.West:
-			if self.direction != Direction.East:
+		elif next_dir == SnakeDirection.West:
+			if self.direction != SnakeDirection.East:
 				next_move = (self.head[0] - 1, self.head[1])
 				self.direction = next_dir
 			else:
 				next_move = (self.head[0] + 1, self.head[1])
-		elif next_dir == Direction.East:
-			if self.direction != Direction.West:
+		elif next_dir == SnakeDirection.East:
+			if self.direction != SnakeDirection.West:
 				next_move = (self.head[0] + 1, self.head[1])
 				self.direction = next_dir
 			else:
@@ -132,9 +120,9 @@ class Snake(object):
 		self.tail_size += self.tail_increase
 
 
-class Board(object):
+class SnakeBoard(object):
 	def __init__(self, rows, cols):
-		self.board = [[GridType.Empty] * cols for _ in range(rows)]
+		self.board = [[SnakeGridType.Empty] * cols for _ in range(rows)]
 
 	@property
 	def rows(self):
@@ -158,46 +146,46 @@ class SnakeEnvironment(Environment):
 						   direction=params.initial_snake_direction,
 						   tail_increase=params.tail_size_increase)
 		self.food = None
-		self.board = Board(params.rows, params.cols)
+		self.board = SnakeBoard(params.rows, params.cols)
 		self.food_count = 0
 
-		self.__update_food()
+		self.__update_food_position()
 		self.__update_board()
 
 	def update(self, action):
 		self.snake.update(action)
 
-		if self.__is_dead():
+		if self.__snake_is_dead():
 			return False
 
-		if self.__got_food():
+		if self.__snake_got_food():
 			self.snake.increase_size()
 			self.food_count += 1
-			self.__update_food()
+			self.__update_food_position()
 
 		self.__update_board()
 
 		return True
 
-	def __is_dead(self):
+	def __snake_is_dead(self):
 		# Snake is outside board
 		if (self.snake.head[0] < 0 or self.snake.head[0] >= self.board.rows) or \
 				(self.snake.head[1] < 0 or self.snake.head[1] >= self.board.cols):
 			return True
 
 		# Snake is colliding with itself
-		if self.board[self.snake.head] == GridType.Snake:
+		if self.board[self.snake.head] == SnakeGridType.Snake:
 			return True
 
 		return False
 
-	def __got_food(self):
-		return self.board[self.snake.head] == GridType.Food
+	def __snake_got_food(self):
+		return self.board[self.snake.head] == SnakeGridType.Food
 
-	def __update_food(self):
+	def __update_food_position(self):
 		while True:
 			food = random.randrange(self.board.rows), random.randrange(self.board.cols)
-			if not (self.board[food] == GridType.Snake or self.board[food] == GridType.Food):
+			if not (self.board[food] == SnakeGridType.Snake or self.board[food] == SnakeGridType.Food):
 				break
 
 		self.food = food
@@ -205,10 +193,10 @@ class SnakeEnvironment(Environment):
 	def __update_board(self):
 		for row in range(self.board.rows):
 			for col in range(self.board.cols):
-				self.board[row, col] = GridType.Empty
+				self.board[row, col] = SnakeGridType.Empty
 
 		if self.food is not None:
-			self.board[self.food] = GridType.Food
+			self.board[self.food] = SnakeGridType.Food
 
 		for body_part in self.snake.body:
-			self.board[body_part] = GridType.Snake
+			self.board[body_part] = SnakeGridType.Snake
