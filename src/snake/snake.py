@@ -5,20 +5,6 @@ import pygame
 import random
 
 
-class SnakeParameters(object):
-	def __init__(self):
-		# Board Related
-		self.rows = 32
-		self.cols = 32
-		self.cell_size = 16
-
-		# Snake Related
-		self.initial_snake_size = 4
-		self.initial_snake_position = (0, 0)
-		self.initial_snake_direction = Direction.East
-		self.tail_size_increase = 4
-
-
 class Color(Enum):
 	White = (255, 255, 255)
 	Black = (0, 0, 0)
@@ -48,7 +34,25 @@ class Action(Enum):
 	Quit = 4
 
 
-class Player(object):
+class SnakeParameters(object):
+	def __init__(self):
+		# Board Related
+		self.rows = 32
+		self.cols = 32
+		self.cell_size = 16
+
+		# Snake Related
+		self.initial_snake_size = 4
+		self.initial_snake_position = (0, 0)
+		self.initial_snake_direction = Direction.East
+		self.tail_size_increase = 4
+
+
+class Agent(object):
+	pass
+
+
+class Player(Agent):
 	def get_action(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -65,8 +69,8 @@ class Player(object):
 
 
 class Snake(object):
-	def __init__(self, direction, head, tail_increase):
-		self.tail_size = tail_increase
+	def __init__(self, size, direction, head, tail_increase):
+		self.tail_size = size
 		self.tail_increase = tail_increase
 		self.direction = direction
 		self.body = deque()
@@ -97,8 +101,6 @@ class Snake(object):
 		else:
 			next_dir = self.direction
 
-		# head = self.body.pop()
-		# self.body.append(head)
 		next_move = None
 
 		if next_dir == Direction.North:
@@ -126,7 +128,8 @@ class Snake(object):
 			else:
 				next_move = (self.head[0] - 1, self.head[1])
 
-		self.body.append(next_move)
+		if next_move is not None:
+			self.body.append(next_move)
 
 		if len(self.body) > self.tail_size:
 			self.body.popleft()
@@ -156,7 +159,8 @@ class Board(object):
 
 class SnakeEnvironment(object):
 	def __init__(self, params):
-		self.snake = Snake(head=params.initial_snake_position,
+		self.snake = Snake(size=params.initial_snake_size,
+						   head=params.initial_snake_position,
 						   direction=params.initial_snake_direction,
 						   tail_increase=params.tail_size_increase)
 		self.food = None
