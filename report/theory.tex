@@ -2,6 +2,48 @@
 
 \begin{document}
 
-\section*{\centering Theory}
+    \section*{\centering Theory}
+
+    \subsection*{Sarsa}
+
+    \begin{align*}
+        Q(S_t, A_t) &=
+        Q(S_t , A_t) +
+        \alpha \left[
+        R_{t + 1} +
+        \gamma Q(S_{t + 1}, A_{t + 1}) - Q(S_t, A_t)
+        \right]
+    \end{align*}
+
+    \subsection*{Expected Sarsa}
+
+    \begin{align*}
+        Q(S_t, A_t) &=
+        Q(S_t , A_t) +
+        \alpha \left[
+        R_{t + 1} +
+        \gamma \mathbb{E} \left[ Q(S_{t + 1}, A_{t + 1}) | S_{t + 1}
+        \right] -
+        Q(S_t, A_t)
+        \right] \\
+        &=
+        Q(S_t , A_t) +
+        \alpha \left[
+        R_{t + 1} +
+        \gamma \sum_a \pi (a | S_{t + 1}) Q(S_{t + 1}, A_{t + 1}) -
+        Q(S_t, A_t)
+        \right]
+    \end{align*}
+
+    \subsection*{Q-Learning}
+
+    \begin{align*}
+        Q(S_t, A_t) &=
+        Q(S_t , A_t) +
+        \alpha \left[
+        R_{t + 1} +
+        \gamma \max_a Q(S_{t + 1}, A_{t + 1}) - Q(S_t, A_t)
+        \right]
+    \end{align*}
 
 \end{document}
