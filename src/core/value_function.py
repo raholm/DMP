@@ -3,6 +3,6 @@ class StateValueFunction(object):
 		pass
 
 
-class StateActionValueFunction(object):
+class ActionValueFunction(object):
 	def __init__(self, state_size, action_size, default_value):
 		pass
