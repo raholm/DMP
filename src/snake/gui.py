@@ -4,7 +4,11 @@ from PyQt5.QtCore import Qt, pyqtSlot, QBasicTimer
 from PyQt5.QtGui import QPainter, QColor
 from PyQt5.QtWidgets import *
 
-from src.snake.logic import SnakeParameters, SnakeEnvironment, Player, SnakeGridType, SnakeAction
+from src.snake.parameters import SnakeParameters
+from src.snake.agent import SnakePlayer
+from src.snake.action import SnakeAction
+from src.snake.board import SnakeGridType
+from src.snake.environment import SnakeEnvironment
 from src.util.color import Color
 
 
@@ -129,7 +133,7 @@ class Window(QMainWindow):
 			self.timer.stop()
 
 		if event.timerId() == self.timer.timerId():
-			self.is_running = self.env.update(self.agent_widget.action)
+			self.is_running = self.env.step(self.agent_widget.action)
 			self.repaint()
 
 	def center(self):
@@ -241,7 +245,7 @@ class Window(QMainWindow):
 if __name__ == '__main__':
 	params = SnakeParameters()
 	env = SnakeEnvironment(params)
-	player = Player()
+	player = SnakePlayer()
 
 	app = QApplication(["SnakeBot"])
 	window = Window(env, params)
