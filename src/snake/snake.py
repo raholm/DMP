@@ -24,6 +24,10 @@ class Snake(object):
 	def head(self):
 		return self.body[-1]
 
+	@property
+	def tail(self):
+		return self.body[0]
+
 	def update(self, action):
 		self.__update_direction(action)
 		self.__update_body()

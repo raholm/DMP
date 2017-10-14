@@ -23,7 +23,7 @@ class Policy(object):
 		action : Action
 		    The action to perform.
 		"""
-		pass
+		raise NotImplementedError
 
 
 class GreedyPolicy(Policy):

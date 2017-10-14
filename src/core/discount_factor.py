@@ -1,6 +1,6 @@
 class DiscountFactor(object):
 	def discount(self, state):
-		pass
+		raise NotImplementedError
 
 
 class StaticDiscountFactor(DiscountFactor):

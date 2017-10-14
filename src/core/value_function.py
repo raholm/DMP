@@ -13,7 +13,7 @@ class StateValueFunction(object):
 		value : float
 		    The estimated value of the state.
 		"""
-		pass
+		raise NotImplementedError
 
 	def set_value(self, state, value):
 		"""
@@ -30,7 +30,7 @@ class StateValueFunction(object):
 		-------
 		self
 		"""
-		pass
+		raise NotImplementedError
 
 
 class ActionValueFunction(object):
@@ -50,7 +50,7 @@ class ActionValueFunction(object):
 		value : float
 		    The estimated value of the state-action pair.
 		"""
-		pass
+		raise NotImplementedError
 
 	def set_value(self, state, action, value):
 		"""
@@ -69,4 +69,4 @@ class ActionValueFunction(object):
 		-------
 		self
 		"""
-		pass
+		raise NotImplementedError

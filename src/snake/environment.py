@@ -3,7 +3,7 @@ import random
 from src.core.environment import Environment
 from src.snake.action import SnakeAction
 from src.snake.snake import Snake
-from src.snake.board import SnakeBoard, SnakeGridType
+from src.snake.board import SnakeBoard, SnakeCellType
 
 
 class SnakeEnvironment(Environment):
@@ -51,24 +51,24 @@ class SnakeEnvironment(Environment):
 			return True
 
 		# Snake is colliding with itself
-		if self.board[self.snake.head] == SnakeGridType.Snake:
+		if self.board[self.snake.head] == SnakeCellType.Snake:
 			return True
 
 		return False
 
 	def __snake_got_food(self):
-		return self.board[self.snake.head] == SnakeGridType.Food
+		return self.board[self.snake.head] == SnakeCellType.Food
 
 	def __update_board(self):
 		for row in range(self.board.rows):
 			for col in range(self.board.cols):
-				self.board[row, col] = SnakeGridType.Empty
+				self.board[row, col] = SnakeCellType.Empty
 
 		if self.food is not None:
-			self.board[self.food] = SnakeGridType.Food
+			self.board[self.food] = SnakeCellType.Food
 
 		for body_part in self.snake.body:
-			self.board[body_part] = SnakeGridType.Snake
+			self.board[body_part] = SnakeCellType.Snake
 
 	def __create_snake(self):
 		return Snake(size=self.params.initial_snake_size,
@@ -79,8 +79,8 @@ class SnakeEnvironment(Environment):
 	def __create_food(self):
 		while True:
 			food = random.randrange(self.board.rows), random.randrange(self.board.cols)
-			if not (self.board[food] == SnakeGridType.Snake or
-							self.board[food] == SnakeGridType.Food or food == self.snake.head):
+			if not (self.board[food] == SnakeCellType.Snake or
+							self.board[food] == SnakeCellType.Food or food == self.snake.head):
 				break
 
 		return food

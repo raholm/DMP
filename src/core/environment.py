@@ -8,7 +8,7 @@ class Environment(object):
 		state : State
 		    The initial state.
 		"""
-		pass
+		raise NotImplementedError
 
 	def episode_is_done(self):
 		"""
@@ -20,7 +20,7 @@ class Environment(object):
 		status : bool
 		    True if agent is in terminal state, False otherwise.
 		"""
-		pass
+		raise NotImplementedError
 
 	def step(self, action):
 		"""
@@ -40,7 +40,7 @@ class Environment(object):
 		reward : Reward
 		    The reward for performing the given action in the current state.
 		"""
-		pass
+		raise NotImplementedError
 
 	def get_valid_actions(self, state):
 		"""
@@ -56,6 +56,7 @@ class Environment(object):
 		actions : List of Action
 		    A list of valid actions.
 		"""
+		raise NotImplementedError
 
 	def get_state_reward(self, state, action):
 		"""
@@ -77,4 +78,4 @@ class Environment(object):
 		reward : Reward
 		    The reward for performing the given action in the given state.
 		"""
-		pass
+		raise NotImplementedError

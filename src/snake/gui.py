@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import *
 from src.snake.parameters import SnakeParameters
 from src.snake.agent import SnakePlayer
 from src.snake.action import SnakeAction
-from src.snake.board import SnakeGridType
+from src.snake.board import SnakeCellType
 from src.snake.environment import SnakeEnvironment
 from src.util.color import Color
 
@@ -29,9 +29,9 @@ class GameWidget(QWidget):
 				x = row * width
 				y = col * height
 
-				if self.env.board[row, col] == SnakeGridType.Snake:
+				if self.env.board[row, col] == SnakeCellType.Snake:
 					color = Color.Green.value
-				elif self.env.board[row, col] == SnakeGridType.Food:
+				elif self.env.board[row, col] == SnakeCellType.Food:
 					color = Color.Red.value
 				else:
 					color = Color.Black.value
