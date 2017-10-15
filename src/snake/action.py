@@ -9,3 +9,9 @@ class SnakeAction(Action, Enum):
 	West = 2
 	East = 3
 	Quit = 4
+
+	def __eq__(self, other):
+		return other and other.value == self.value
+
+	def __hash__(self):
+		return hash(self.value)

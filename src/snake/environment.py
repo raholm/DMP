@@ -13,6 +13,7 @@ class SnakeEnvironment(Environment):
 		self.snake = None
 		self.food = None
 		self.food_count = None
+		self.episode_running = True
 
 		self.start_new_episode()
 
@@ -20,29 +21,37 @@ class SnakeEnvironment(Environment):
 		self.snake = self.__create_snake()
 		self.food = self.__create_food()
 		self.food_count = 0
+		self.episode_running = True
 
 		self.__update_board()
 
+		return self.params.state(self)
+
 	def episode_is_done(self):
-		return self.__snake_is_dead()
+		return not self.episode_running
 
 	def get_valid_actions(self, state):
 		return [SnakeAction.South, SnakeAction.North, SnakeAction.West, SnakeAction.East]
 
 	def step(self, action):
+		old_state = self.params.state(self)
+
 		self.snake.update(action)
 
-		if self.episode_is_done():
-			return False
+		if self.__snake_is_dead():
+			self.episode_running = False
 
-		if self.__snake_got_food():
-			self.snake.increase_size()
-			self.food_count += 1
-			self.food = self.__create_food()
+		if self.episode_running:
+			if self.__snake_got_food():
+				self.snake.increase_size()
+				self.food_count += 1
+				self.food = self.__create_food()
 
-		self.__update_board()
+			self.__update_board()
 
-		return True
+		new_state = self.params.state(self)
+		reward = self.params.reward(self, old_state, action, new_state)
+		return new_state, reward
 
 	def __snake_is_dead(self):
 		# Snake is outside board

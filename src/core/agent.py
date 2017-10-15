@@ -1,2 +1,3 @@
 class Agent(object):
-	pass
+	def get_action(self, state):
+		raise NotImplementedError

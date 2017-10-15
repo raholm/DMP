@@ -8,7 +8,7 @@ class SnakeState(State):
 		raise NotImplementedError
 
 	def __eq__(self, other):
-		return other and other.__key() == self._key()
+		return other and other._key() == self._key()
 
 	def __hash__(self):
 		return hash(self._key())
@@ -33,6 +33,14 @@ class SnakeAndFoodState(SnakeState):
 							for row_num, row in enumerate(env.board.grid)
 							for col_num, cell in enumerate(row)
 							if not cell == SnakeCellType.Empty)
+
+	def _key(self):
+		return self.data
+
+
+class SnakeHeadAndFoodState(SnakeState):
+	def __init__(self, env):
+		self.data = (env.snake.head, env.food)
 
 	def _key(self):
 		return self.data

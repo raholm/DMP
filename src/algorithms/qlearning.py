@@ -22,7 +22,7 @@ class QLearning(TemporalDifferenceLearning):
 
 				new_value_est = current_value + self.alpha * (
 					reward.value +
-					self.gamma * self.Q.get_value(new_state, next_action) -
+					self.gamma(state) * self.Q.get_value(new_state, next_action) -
 					current_value
 				)
 
@@ -30,3 +30,5 @@ class QLearning(TemporalDifferenceLearning):
 
 				state = new_state
 				action = next_action
+
+		return self

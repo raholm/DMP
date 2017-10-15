@@ -44,7 +44,7 @@ class GreedyPolicy(Policy):
 			action_state_value = value_function.get_value(state, action)
 
 			if action_state_value > best_action_value:
-				best_action = best_action
+				best_action = action
 				best_action_value = action_state_value
 
 		return best_action
@@ -60,9 +60,8 @@ class EpsilonGreedyPolicy(GreedyPolicy):
 		self.epsilon = epsilon
 
 	def get_action(self, state, value_function):
-		actions = self.env.get_valid_actions(state)
-
 		if np.random.uniform(size=1, low=0, high=1) < self.epsilon:
-			return actions[np.random.choice(len(actions), size=1)]
+			actions = self.env.get_valid_actions(state)
+			return np.random.choice(actions, size=1)[0]
 
 		return super().get_action(state, value_function)

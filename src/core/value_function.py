@@ -70,3 +70,21 @@ class ActionValueFunction(object):
 		self
 		"""
 		raise NotImplementedError
+
+
+class DictActionValueFunction(ActionValueFunction):
+	def __init__(self, default_value):
+		self.values = dict()
+		self.default_value = default_value
+
+	def set_value(self, state, action, value):
+		if state is None or action is None:
+			return
+
+		self.values[(state, action)] = value
+
+	def get_value(self, state, action):
+		if state is None or action is None:
+			return self.default_value
+		value = self.values.get((state, action), self.default_value)
+		return value

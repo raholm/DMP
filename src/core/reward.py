@@ -1,3 +1,4 @@
 class Reward(object):
-	def __init__(self, value):
-		self.value = value
+	@property
+	def value(self):
+		raise NotImplementedError

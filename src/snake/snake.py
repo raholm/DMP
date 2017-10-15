@@ -32,7 +32,13 @@ class Snake(object):
 		self.__update_direction(action)
 		self.__update_body()
 
+	def increase_size(self):
+		self.tail_size += self.tail_increase
+
 	def __update_direction(self, action):
+		if action is None:
+			return
+
 		if action == SnakeAction.North:
 			self.next_dir.appendleft(SnakeDirection.North)
 		elif action == SnakeAction.South:
@@ -43,7 +49,7 @@ class Snake(object):
 			self.next_dir.appendleft(SnakeDirection.West)
 
 	def __update_body(self):
-		if len(self.next_dir) != 0:
+		if len(self.next_dir) > 0:
 			next_dir = self.next_dir.pop()
 		else:
 			next_dir = self.direction
@@ -80,6 +86,3 @@ class Snake(object):
 
 		if len(self.body) > self.tail_size:
 			self.body.popleft()
-
-	def increase_size(self):
-		self.tail_size += self.tail_increase

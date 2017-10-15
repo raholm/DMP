@@ -43,23 +43,25 @@ class GameWidget(QWidget):
 
 
 class AgentWidget(QWidget):
-	pass
-
-
-class PlayerWidget(AgentWidget):
-	def __init__(self, parent=None):
+	def __init__(self, agent, parent=None):
 		super().__init__(parent)
-		self.action = None
+		self.agent = agent
+
+	def get_action(self, state):
+		return self.agent.get_action(state)
 
 	def keyPressEvent(self, event):
+		if not isinstance(self.agent, SnakePlayer):
+			return
+
 		if event.key() == Qt.Key_Up:
-			self.action = SnakeAction.North
+			self.agent.action = SnakeAction.North
 		elif event.key() == Qt.Key_Down:
-			self.action = SnakeAction.South
+			self.agent.action = SnakeAction.South
 		elif event.key() == Qt.Key_Left:
-			self.action = SnakeAction.West
+			self.agent.action = SnakeAction.West
 		elif event.key() == Qt.Key_Right:
-			self.action = SnakeAction.East
+			self.agent.action = SnakeAction.East
 
 
 class CreateWidget(QWidget):
@@ -102,7 +104,7 @@ class CreateWindow(QMainWindow):
 
 
 class Window(QMainWindow):
-	def __init__(self, env, params):
+	def __init__(self, env, agent, params):
 		super().__init__()
 		self.setGeometry(50, 50, params.rows * params.cell_size, params.cols * params.cell_size)
 		self.setWindowTitle("SnakeBot")
@@ -111,7 +113,7 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.game_widget)
 
 		self.create_widget = CreateWindow(self)
-		self.agent_widget = PlayerWidget(self)
+		self.agent_widget = AgentWidget(agent, self)
 
 		self.__create_menu()
 
@@ -122,18 +124,35 @@ class Window(QMainWindow):
 		self.timer = QBasicTimer()
 		self.timer.start(params.update_rate, self)
 
+		self.current_state = None
+		self.previous_state = None
+		self.previous_action = None
+
 		self.center()
 		self.update()
 
 	def keyPressEvent(self, event):
-		self.agent_widget.keyPressEvent(event)
+		if event.key() == Qt.Key_Space:
+			self.previous_state = self.current_state
+			self.current_state = self.env.start_new_episode()
+			self.is_running = True
+			self.restart_timer()
+		elif event.key() == Qt.Key_P:
+			self.is_running = not self.is_running
+			if self.is_running:
+				self.restart_timer()
+		else:
+			self.agent_widget.keyPressEvent(event)
 
 	def timerEvent(self, event):
 		if not self.is_running:
 			self.timer.stop()
 
 		if event.timerId() == self.timer.timerId():
-			self.is_running = self.env.step(self.agent_widget.action)
+			self.previous_state = self.current_state
+			self.previous_action = self.agent_widget.get_action(self.current_state)
+			self.current_state, _ = self.env.step(self.previous_action)
+			self.is_running = not self.env.episode_is_done()
 			self.repaint()
 
 	def center(self):
@@ -142,6 +161,9 @@ class Window(QMainWindow):
 		center_point = QApplication.desktop().screenGeometry(screen).center()
 		frame_gm.moveCenter(center_point)
 		self.move(frame_gm.topLeft())
+
+	def restart_timer(self):
+		self.timer.start(self.params.update_rate, self)
 
 	def __create_menu(self):
 		create_action = QAction("&Create", self)
