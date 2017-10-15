@@ -81,10 +81,12 @@ class DictActionValueFunction(ActionValueFunction):
 		if state is None or action is None:
 			return
 
-		self.values[(state, action)] = value
+		self.values[(hash(state), hash(action))] = value
+		return self
 
 	def get_value(self, state, action):
 		if state is None or action is None:
 			return self.default_value
-		value = self.values.get((state, action), self.default_value)
+
+		value = self.values.get((hash(state), hash(action)), self.default_value)
 		return value

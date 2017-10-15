@@ -29,10 +29,11 @@ class WholeState(SnakeState):
 
 class SnakeAndFoodState(SnakeState):
 	def __init__(self, env):
-		self.data = "".join(str((row_num, col_num))
-							for row_num, row in enumerate(env.board.grid)
-							for col_num, cell in enumerate(row)
-							if not cell == SnakeCellType.Empty)
+		self.data = (tuple((row, col)
+						   for row in range(env.board.rows)
+						   for col in range(env.board.cols)
+						   if not env.board[row, col] == SnakeCellType.Empty),
+					 env.food_count)
 
 	def _key(self):
 		return self.data
@@ -40,7 +41,15 @@ class SnakeAndFoodState(SnakeState):
 
 class SnakeHeadAndFoodState(SnakeState):
 	def __init__(self, env):
-		self.data = (env.snake.head, env.food)
+		self.data = (env.snake.head, env.food, env.food_count)
+
+	def _key(self):
+		return self.data
+
+
+class SnakeHeadTailAndFoodState(SnakeState):
+	def __init__(self, env):
+		self.data = (env.snake.head, env.snake.tail, env.food)
 
 	def _key(self):
 		return self.data

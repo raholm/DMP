@@ -1,9 +1,13 @@
+import pickle
+
 from PyQt5.QtWidgets import QApplication
+from timeit import default_timer as timer
 
 from src.algorithms.qlearning import QLearning
 from src.core.discount_factor import StaticDiscountFactor
 from src.core.policy import EpsilonGreedyPolicy, GreedyPolicy
 from src.core.value_function import DictActionValueFunction
+from src.snake.action import SnakeAction
 from src.snake.gui import Window
 from src.snake.parameters import SnakeParameters
 from src.snake.agent import SnakePlayer, SnakeAgent
@@ -18,21 +22,29 @@ def start_app(env, agent, params):
 	app.exec_()
 
 
-def test_train_qlearning():
+def train_qlearning():
+	start = timer()
+
 	params = SnakeParameters()
 	env = SnakeEnvironment(params)
+	policy = EpsilonGreedyPolicy(env, params.epsilon)
 
-	discount_factor = StaticDiscountFactor(1)
-	learning_rate = 0.5
-	policy = EpsilonGreedyPolicy(env, 0.25)
-	value_function = DictActionValueFunction(0)
+	learner = QLearning(action_value_function=params.value_function,
+						policy=policy,
+						learning_rate=params.learning_rate,
+						discount_factor=params.discount_factor)
 
-	learning_alg = QLearning(action_value_function=value_function,
-							 policy=policy,
-							 learning_rate=learning_rate,
-							 discount_factor=discount_factor)
+	learner.train(env, params.train_episodes)
 
-	learning_alg.train(env, n_episodes=100000)
+	pickle.dump(learner.Q, open("../cache/qlearner_%i.p" % params.train_episodes, "wb"))
+
+	print("Elapsed time:", timer() - start)
+
+
+def run_qlearning():
+	params = SnakeParameters()
+	env = SnakeEnvironment(params)
+	value_function = pickle.load(open("../cache/qlearner_%i.p" % params.train_episodes, "rb"))
 
 	agent = SnakeAgent(policy=EpsilonGreedyPolicy(env, 0),
 					   action_value_function=value_function)
@@ -67,4 +79,5 @@ def main():
 
 if __name__ == "__main__":
 	# main()
-	test_train_qlearning()
+	train_qlearning()
+# run_qlearning()
