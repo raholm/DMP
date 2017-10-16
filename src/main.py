@@ -4,10 +4,7 @@ from PyQt5.QtWidgets import QApplication
 from timeit import default_timer as timer
 
 from src.algorithms.qlearning import QLearning
-from src.core.discount_factor import StaticDiscountFactor
-from src.core.policy import EpsilonGreedyPolicy, GreedyPolicy
-from src.core.value_function import DictActionValueFunction
-from src.snake.action import SnakeAction
+from src.core.policy import EpsilonGreedyPolicy
 from src.snake.gui import Window
 from src.snake.parameters import SnakeParameters
 from src.snake.agent import SnakePlayer, SnakeAgent
@@ -79,5 +76,5 @@ def main():
 
 if __name__ == "__main__":
 	# main()
-	train_qlearning()
-# run_qlearning()
+	# train_qlearning()
+	run_qlearning()

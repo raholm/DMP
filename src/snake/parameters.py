@@ -12,8 +12,8 @@ class SnakeParameters(object):
 		self.update_rate = 100
 
 		# Board Related
-		self.rows = 9
-		self.cols = 9
+		self.rows = 5
+		self.cols = 5
 		self.cell_size = 48
 
 		# Snake Related
@@ -30,4 +30,4 @@ class SnakeParameters(object):
 		self.learning_rate = 0.15
 		self.epsilon = 0.2
 		self.value_function = DictActionValueFunction(0)
-		self.train_episodes = 100
+		self.train_episodes = 10000000

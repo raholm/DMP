@@ -25,9 +25,31 @@ class Policy(object):
 		"""
 		raise NotImplementedError
 
+	def get_optimal_action(self, state, value_function):
+		"""
+		Gets the optimal action in terms of the value function.
+
+		Parameters
+		----------
+		state : State
+		    The state of the agent.
+		value_function : ValueFunction
+		    The value function with current estimates.
+
+
+		Returns
+		-------
+		action : Action
+		    The optimal greedy action.
+		"""
+		raise NotImplementedError
+
 
 class GreedyPolicy(Policy):
 	def get_action(self, state, value_function):
+		return self.get_optimal_action(state, value_function)
+
+	def get_optimal_action(self, state, value_function):
 		actions = self.env.get_valid_actions(state)
 
 		if isinstance(value_function, ActionValueFunction):
@@ -65,3 +87,6 @@ class EpsilonGreedyPolicy(GreedyPolicy):
 			return np.random.choice(actions, size=1)[0]
 
 		return super().get_action(state, value_function)
+
+	def get_optimal_action(self, state, value_function):
+		return super().get_optimal_action(state, value_function)
