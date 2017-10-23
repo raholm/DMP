@@ -28,6 +28,8 @@ class SnakeParameters(object):
 		# Learning Related
 		self.discount_factor = StaticDiscountFactor(0.85)
 		self.learning_rate = 0.15
-		self.epsilon = 0.2
+		self.epsilon = 0.1
 		self.value_function = DictActionValueFunction(0)
 		self.train_episodes = 10000000
+		self.file_str = "%s_%s_%ix%i" % (self.train_episodes, "SnakeAndFoodState",
+										 self.rows, self.cols)

@@ -53,6 +53,10 @@ class SnakeEnvironment(Environment):
 		reward = self.params.reward(self, old_state, action, new_state)
 		return new_state, reward
 
+	@property
+	def score(self):
+		return self.food_count * 100
+
 	def __snake_is_dead(self):
 		# Snake is outside board
 		if (self.snake.head[0] < 0 or self.snake.head[0] >= self.board.rows) or \

@@ -33,7 +33,7 @@ def train_qlearning():
 
 	learner.train(env, params.train_episodes)
 
-	pickle.dump(learner.Q, open("../cache/qlearner_%i.p" % params.train_episodes, "wb"))
+	pickle.dump(learner.Q, open("../cache/qlearner_%s.p" % params.file_str, "wb"))
 
 	print("Elapsed time:", timer() - start)
 
@@ -41,7 +41,7 @@ def train_qlearning():
 def run_qlearning():
 	params = SnakeParameters()
 	env = SnakeEnvironment(params)
-	value_function = pickle.load(open("../cache/qlearner_%i.p" % params.train_episodes, "rb"))
+	value_function = pickle.load(open("../cache/qlearner_%s.p" % params.file_str, "rb"))
 
 	agent = SnakeAgent(policy=EpsilonGreedyPolicy(env, 0),
 					   action_value_function=value_function)

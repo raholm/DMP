@@ -33,7 +33,7 @@ class SnakeAndFoodState(SnakeState):
 						   for row in range(env.board.rows)
 						   for col in range(env.board.cols)
 						   if not env.board[row, col] == SnakeCellType.Empty),
-					 env.food_count)
+					 env.score, (env.board.rows, env.board.cols))
 
 	def _key(self):
 		return self.data
