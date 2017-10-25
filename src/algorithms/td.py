@@ -1,3 +1,0 @@
-class TemporalDifference(object):
-	pass
-

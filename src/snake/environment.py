@@ -1,4 +1,4 @@
-import random
+import numpy as np
 
 from src.core.environment import Environment
 from src.snake.action import SnakeAction
@@ -91,7 +91,7 @@ class SnakeEnvironment(Environment):
 
 	def __create_food(self):
 		while True:
-			food = random.randrange(self.board.rows), random.randrange(self.board.cols)
+			food = np.random.randint(self.board.rows), np.random.randint(self.board.cols)
 			if not (self.board[food] == SnakeCellType.Snake or
 							self.board[food] == SnakeCellType.Food or food == self.snake.head):
 				break

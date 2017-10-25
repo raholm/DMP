@@ -6,6 +6,7 @@ from src.core.value_function import ActionValueFunction
 class Policy(object):
 	def __init__(self, env):
 		self.env = env
+		self.exploratory = False
 
 	def get_action(self, state, value_function):
 		"""
@@ -82,7 +83,10 @@ class EpsilonGreedyPolicy(GreedyPolicy):
 		self.epsilon = epsilon
 
 	def get_action(self, state, value_function):
+		self.exploratory = False
+
 		if np.random.uniform(size=1, low=0, high=1) < self.epsilon:
+			self.exploratory = True
 			actions = self.env.get_valid_actions(state)
 			return np.random.choice(actions, size=1)[0]
 
