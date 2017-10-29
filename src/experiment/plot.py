@@ -22,6 +22,19 @@ def plot_average_reward_over_time(learner):
 	plt.ylabel("Avg. Reward")
 
 
+def plot_multi_average_reward_over_time(rewards_per_episode, labels):
+	mean_reward_over_time = [compute_mean_over_time(rpe)
+							 for rpe in rewards_per_episode]
+
+	for label, mrot in zip(labels, mean_reward_over_time):
+		plt.semilogx(mrot, label=label)
+
+	plt.title("Average Reward Over Time")
+	plt.xlabel("# of episodes")
+	plt.ylabel("Reward")
+	plt.legend()
+
+
 def plot_actions_over_time(learner):
 	actions = learner.actions_per_episode
 
@@ -39,6 +52,19 @@ def plot_average_actions_over_time(learner):
 	plt.title("Average # of Actions Over Time")
 	plt.xlabel("# of episodes")
 	plt.ylabel("Avg. # of actions")
+
+
+def plot_multi_average_actions_over_time(actions_per_episode, labels):
+	average_actions_over_time = [compute_mean_over_time(ape)
+								 for ape in actions_per_episode]
+
+	for label, aaot in zip(labels, average_actions_over_time):
+		plt.semilogx(aaot, label=label)
+
+	plt.title("Average # of Actions Over Time")
+	plt.xlabel("# of episodes")
+	plt.ylabel("# of actions")
+	plt.legend()
 
 
 def plot_exploration_vs_exploitation_over_time(learner):
