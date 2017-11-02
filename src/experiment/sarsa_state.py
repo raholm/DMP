@@ -14,12 +14,15 @@ from src.main import start_app
 from src.snake.agent import SnakeAgent
 from src.snake.environment import SnakeEnvironment
 from src.snake.parameters import SnakeParameters
-from src.snake.state import SnakeAndFoodWithScoreState, BoardState, SnakeAndFoodWithoutScoreState, DistanceState, \
-	DirectionalDistanceState
+from src.snake.state import BoardState, \
+	DirectionalDistanceState, BoardDimensionScoreState, BoardDimensionState, BoardScoreState, SnakeFoodState, \
+	SnakeFoodDimensionState, SnakeFoodScoreState, SnakeFoodDimensionScoreState, DirectionalState, \
+	DirectionalDimensionState, DirectionalScoreState, DirectionalDimensionScoreState, DirectionalDistanceDimensionState, \
+	DirectionalDistanceScoreState, DirectionalDistanceDimensionScoreState
 from src.util.io import write_learner, read_learner
 
 
-def train_and_store_sarsa_model(env, params, dir):
+def train_and_store_model(env, params, dir):
 	learner = Sarsa(action_value_function=params.value_function,
 					policy=params.policy,
 					learning_rate=params.learning_rate,
@@ -36,7 +39,37 @@ def train_and_store_sarsa_model(env, params, dir):
 	return learner
 
 
-def train_sarsa_models():
+def train_state_models(states, env, params, dir):
+	for state in states:
+		params.state = state
+		train_and_store_model(env, params, dir)
+
+
+def train_board_state_models(env, params, dir):
+	states = [BoardState, BoardDimensionState,
+			  BoardScoreState, BoardDimensionScoreState]
+	train_state_models(states, env, params, dir)
+
+
+def train_snake_food_state_models(env, params, dir):
+	states = [SnakeFoodState, SnakeFoodDimensionState,
+			  SnakeFoodScoreState, SnakeFoodDimensionScoreState]
+	train_state_models(states, env, params, dir)
+
+
+def train_directional_state_models(env, params, dir):
+	states = [DirectionalState, DirectionalDimensionState,
+			  DirectionalScoreState, DirectionalDimensionScoreState]
+	train_state_models(states, env, params, dir)
+
+
+def train_directional_distance_state_models(env, params, dir):
+	states = [DirectionalDistanceState, DirectionalDistanceDimensionState,
+			  DirectionalDistanceScoreState, DirectionalDistanceDimensionScoreState]
+	train_state_models(states, env, params, dir)
+
+
+def train_models():
 	np.random.seed(123)
 
 	start = timer()
@@ -46,25 +79,10 @@ def train_sarsa_models():
 	params.policy = EpsilonGreedyPolicy(env, params.epsilon)
 	dir = "../../models/sarsa/state"
 
-	# Model 1
-	params.state = BoardState
-	train_and_store_sarsa_model(env, params, dir)
-
-	# Model 2
-	params.state = SnakeAndFoodWithScoreState
-	train_and_store_sarsa_model(env, params, dir)
-
-	# Model 3
-	params.state = SnakeAndFoodWithoutScoreState
-	train_and_store_sarsa_model(env, params, dir)
-
-	# Model 4
-	params.state = DistanceState
-	train_and_store_sarsa_model(env, params, dir)
-
-	# Model 5
-	params.state = DirectionalDistanceState
-	train_and_store_sarsa_model(env, params, dir)
+	train_board_state_models(env, params, dir)
+	train_snake_food_state_models(env, params, dir)
+	train_directional_state_models(env, params, dir)
+	train_directional_distance_state_models(env, params, dir)
 
 	print("Elapsed time:", timer() - start)
 
@@ -82,15 +100,9 @@ def read_sarsa_models(dir):
 	return models, filenames
 
 
-def analyze_sarsa_models():
-	models, filenames = read_sarsa_models("../../models/sarsa/state")
-
+def analyze_state_models(models, states):
 	actions_per_episode = []
 	rewards_per_episode = []
-	states = []
-
-	for filename in filenames:
-		states.append(filename.split("_")[0])
 
 	for model in models:
 		actions_per_episode.append(model.actions_per_episode)
@@ -105,6 +117,61 @@ def analyze_sarsa_models():
 	plot_multi_average_actions_over_time(actions_per_episode, states)
 
 	plt.show()
+
+
+def filter_state_models(models, states, predicate):
+	current_models = []
+	current_states = []
+
+	for i, state in enumerate(states):
+		if predicate(state):
+			current_models.append(models[i])
+			current_states.append(state)
+
+	return current_models, current_states
+
+
+def analyze_board_state_models(models, states):
+	current_models, current_states = \
+		filter_state_models(models, states,
+							lambda state: state.startswith("Board"))
+	analyze_state_models(current_models, current_states)
+
+
+def analyze_snake_food_state_models(models, states):
+	current_models, current_states = \
+		filter_state_models(models, states,
+							lambda state: state.startswith("SnakeFood"))
+	analyze_state_models(current_models, current_states)
+
+
+def analyze_directional_state_models(models, states):
+	current_models, current_states = \
+		filter_state_models(models, states,
+							lambda state: state.startswith("Directional") and
+										  not state.startswith("DirectionalDistance"))
+	analyze_state_models(current_models, current_states)
+
+
+def analyze_directional_distance_state_models(models, states):
+	current_models, current_states = \
+		filter_state_models(models, states,
+							lambda state: state.startswith("DirectionalDistance"))
+	analyze_state_models(current_models, current_states)
+
+
+def analyze_models():
+	models, filenames = read_sarsa_models("../../models/sarsa/state")
+
+	states = []
+
+	for filename in filenames:
+		states.append(filename.split("_")[0])
+
+	# analyze_board_state_models(models, states)
+	# analyze_snake_food_state_models(models, states)
+	# analyze_directional_state_models(models, states)
+	analyze_directional_distance_state_models(models, states)
 
 
 def run_sarsa():
@@ -154,5 +221,5 @@ def main():
 
 
 if __name__ == "__main__":
-	# train_sarsa_models()
-	analyze_sarsa_models()
+	# train_models()
+	analyze_models()
