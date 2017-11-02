@@ -1,4 +1,4 @@
-from src.algorithms.sarsa import Sarsa
+from src.algorithms.sarsa import ExpectedSarsa
 from src.core.policy import EpsilonGreedyPolicy
 from src.experiment.parameters import ExperimentParameters
 from src.experiment.state.analysis import analyze_models
@@ -11,11 +11,11 @@ def train():
 	params = SnakeParameters()
 	env = SnakeEnvironment(params)
 	params.policy = EpsilonGreedyPolicy(env, params.epsilon)
-	output_dir = "../../../models/sarsa/state"
+	output_dir = "../../../models/expected_sarsa/state"
 
 	exp_params = ExperimentParameters()
 	exp_params.env = env
-	exp_params.model_class = Sarsa
+	exp_params.model_class = ExpectedSarsa
 	exp_params.model_params = params
 	exp_params.model_output_dir = output_dir
 
@@ -23,7 +23,7 @@ def train():
 
 
 def analyze():
-	output_dir = "../../../models/sarsa/state"
+	output_dir = "../../../models/expected_sarsa/state"
 
 	exp_params = ExperimentParameters()
 	exp_params.model_output_dir = output_dir
