@@ -4,11 +4,11 @@ from PyQt5.QtCore import Qt, pyqtSlot, QBasicTimer
 from PyQt5.QtGui import QPainter, QColor
 from PyQt5.QtWidgets import *
 
-from src.snake.parameters import SnakeParameters
-from src.snake.agent import SnakePlayer
 from src.snake.action import SnakeAction
+from src.snake.agent import SnakePlayer
 from src.snake.board import SnakeCellType
 from src.snake.environment import SnakeEnvironment
+from src.snake.parameters import SnakeParameters
 from src.util.color import Color
 
 
@@ -270,6 +270,6 @@ if __name__ == '__main__':
 	player = SnakePlayer()
 
 	app = QApplication(["SnakeBot"])
-	window = Window(env, params)
+	window = Window(env, player, params)
 	window.show()
 	app.exec_()

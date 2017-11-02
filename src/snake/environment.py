@@ -2,8 +2,8 @@ import numpy as np
 
 from src.core.environment import Environment
 from src.snake.action import SnakeAction
-from src.snake.snake import Snake
 from src.snake.board import SnakeBoard, SnakeCellType
+from src.snake.snake import Snake
 
 
 class SnakeEnvironment(Environment):

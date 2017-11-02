@@ -3,13 +3,13 @@ from src.core.learning_rate import StaticLearningRate
 from src.core.value_function import DictActionValueFunction
 from src.snake.reward import DefaultSnakeReward
 from src.snake.snake import SnakeDirection
-from src.snake.state import SnakeAndFoodWithScoreState
+from src.snake.state import SnakeFoodScoreState
 
 
 class SnakeParameters(object):
 	def __init__(self):
 		# Game Related
-		self.update_rate = 100
+		self.update_rate = 250
 
 		# Board Related
 		self.rows = 5
@@ -22,7 +22,7 @@ class SnakeParameters(object):
 		self.initial_snake_direction = SnakeDirection.East
 		self.tail_size_increase = 1
 
-		self.state = SnakeAndFoodWithScoreState
+		self.state = SnakeFoodScoreState
 		self.reward = DefaultSnakeReward
 
 		# Learning Related

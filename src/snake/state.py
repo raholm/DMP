@@ -42,10 +42,21 @@ class BoardData(object):
 
 class SnakeFoodData(object):
 	def __init__(self, env):
-		self.data = tuple((row, col)
-						  for row in range(env.board.rows)
-						  for col in range(env.board.cols)
-						  if not env.board[row, col] == SnakeCellType.Empty)
+		self.data = self.__get_snake(env), self.__get_food(env)
+
+	@staticmethod
+	def __get_snake(env):
+		return tuple((row, col)
+					 for row in range(env.board.rows)
+					 for col in range(env.board.cols)
+					 if env.board[row, col] == SnakeCellType.Snake)
+
+	@staticmethod
+	def __get_food(env):
+		return tuple((row, col)
+					 for row in range(env.board.rows)
+					 for col in range(env.board.cols)
+					 if env.board[row, col] == SnakeCellType.Food)[0]
 
 
 class DistanceData(object):

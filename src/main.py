@@ -1,16 +1,16 @@
 import pickle
+from timeit import default_timer as timer
 
 from PyQt5.QtWidgets import QApplication
-from timeit import default_timer as timer
 
 from src.algorithms.qlearning import QLearning
 from src.algorithms.sarsa import Sarsa
 from src.core.policy import EpsilonGreedyPolicy
-from src.snake.gui import Window
-from src.snake.parameters import SnakeParameters
 from src.snake.agent import SnakePlayer, SnakeAgent
 from src.snake.environment import SnakeEnvironment
-from src.snake.state import WholeState, DistanceState, SnakeAndFoodState
+from src.snake.gui import Window
+from src.snake.parameters import SnakeParameters
+from src.snake.state import BoardState, SnakeFoodState, DirectionalState, DirectionalDistanceState
 
 
 def start_app(env, agent, params):
@@ -34,7 +34,7 @@ def train_qlearning():
 
 	learner.train(env, params.train_episodes)
 
-	pickle.dump(learner.Q, open("../cache/qlearning_%s.p" % params.file_str, "wb"))
+	pickle.dump(learner.Q, open("../models/qlearning_%s.p" % params.file_str, "wb"))
 
 	print("Elapsed time:", timer() - start)
 
@@ -42,7 +42,7 @@ def train_qlearning():
 def run_qlearning():
 	params = SnakeParameters()
 	env = SnakeEnvironment(params)
-	value_function = pickle.load(open("../cache/qlearning_%s.p" % params.file_str, "rb"))
+	value_function = pickle.load(open("../models/qlearning_%s.p" % params.file_str, "rb"))
 
 	agent = SnakeAgent(policy=EpsilonGreedyPolicy(env, 0),
 					   action_value_function=value_function)
@@ -64,7 +64,7 @@ def train_sarsa():
 
 	learner.train(env, params.train_episodes)
 
-	pickle.dump(learner.Q, open("../cache/sarsa_%s.p" % params.file_str, "wb"))
+	pickle.dump(learner.Q, open("../models/sarsa_%s.p" % params.file_str, "wb"))
 
 	print("Elapsed time:", timer() - start)
 
@@ -72,7 +72,7 @@ def train_sarsa():
 def run_sarsa():
 	params = SnakeParameters()
 	env = SnakeEnvironment(params)
-	value_function = pickle.load(open("../cache/sarsa_%s.p" % params.file_str, "rb"))
+	value_function = pickle.load(open("../models/sarsa_%s.p" % params.file_str, "rb"))
 
 	agent = SnakeAgent(policy=EpsilonGreedyPolicy(env, 0),
 					   action_value_function=value_function)
@@ -84,15 +84,19 @@ def test_state():
 	params = SnakeParameters()
 	env = SnakeEnvironment(params)
 
-	state = WholeState(env)
+	state = BoardState(env)
 	print(state)
 	print(hash(state))
 
-	state = DistanceState(env)
+	state = DirectionalState(env)
 	print(state)
 	print(hash(state))
 
-	state = SnakeAndFoodState(env)
+	state = SnakeFoodState(env)
+	print(state)
+	print(hash(state))
+
+	state = DirectionalDistanceState(env)
 	print(state)
 	print(hash(state))
 
@@ -106,11 +110,10 @@ def main():
 
 
 if __name__ == "__main__":
-	# main()
-	# train_qlearning()
-	# run_qlearning()
+	main()
+	# test_state()
+# train_qlearning()
+# run_qlearning()
 
-	train_sarsa()
-	run_sarsa()
-
-
+# train_sarsa()
+# run_sarsa()
