@@ -1,7 +1,29 @@
 \documentclass[report.tex]{subfiles}
 
 \begin{document}
+    \section*{\centering Method}
 
-\section*{\centering Method}
+    In order the answer the research questions presented in the introduction, I have divided the experiments into two parts as presented below.
+
+    \subsection*{State Experiment}
+
+    In order to determine the importance of the the state representation I have decided upon 4 different ones. Additional, I have also decided to test whether it is important for the state to contain the board dimensions in order for the agent to infer deadly state-action pairs. And also if the current game score is important for the agent to be able to predict the future rewards more accurate.
+
+    Intuitively it would be reasonable to assume that if the agent knows the dimensions of the board it could more easily infer state-action pairs that are deadly and thus end the game with potentially less total reward.
+
+    By the same reasoning giving the agent access to its current score would improve the estimation of future rewards and thus lead to better actions.
+
+    The 4 states are the following:
+
+    \begin{itemize}
+        \item \textbf{Board}: Represents the complete board state.
+        \item \textbf{SnakeFood}: Represents coodinates of the Snake's body and the coodinate of the food source.
+        \item \textbf{Directional}: Represents the direction the Snake should travel to get to the food source without following the dynamics of the game. That means it might not be possible to change to that direction with a single action, e.g., the snake travels east but should travel west.
+        \item \textbf{DirectionalDistance}: Represent the same direction as above but also contains the manhattan distance from the head of the Snake to the food source.
+    \end{itemize}
+
+    and each state is split up into 4 different states to consider with/without board dimensions and with/without score, which gives 16 states in total.
+
+    \subsection*{Reward}
 
 \end{document}

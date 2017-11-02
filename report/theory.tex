@@ -4,7 +4,58 @@
 
     \section*{\centering Theory}
 
-    \subsection*{Sarsa}
+    \subsection*{Markov Decision Process}
+
+    \subsubsection*{Dynamics}
+
+    \begin{align*}
+        p(\nextstate, r | s, a) &=
+        Pr(S_{t + 1} = \nextstate, R_{t + 1} = r | S_t = s, A_t = a) \\
+        p(\nextstate | s, a) &=
+        Pr(S_{t + 1} = \nextstate| S_t = s, A_t = a) =
+        \sum_r p(\nextstate, r | s, a) \\
+        \pi(a | s) &= Pr(A_t = a | S_t = s)
+    \end{align*}
+
+    \subsubsection*{Expected Reward}
+
+    \begin{align*}
+        r(s, a) &=
+        \mathbb{E} \left[ R_{t + 1} \bigg\rvert S_t = s, A_t = a \right] =
+        \sum_r r \sum_{\nextstate} p(\nextstate, r | s, a) \\
+        r(s, a, \nextstate) &=
+        \mathbb{E} \left[ R_{t + 1} \bigg\rvert S_t = s, A_t = a, S_{t + 1} = \nextstate \right] =
+        \frac{\sum_r r p(\nextstate, r | s, a)}{p(\nextstate | s, a)}
+    \end{align*}
+
+
+    \subsubsection*{State-Value Function}
+
+    \begin{align*}
+        v_{\pi}(s) &= \mathbb{E} \left[ \sum_{k=0}^{\infty} \gamma^k R_{t + k + 1} \bigg\rvert S_t = s \right] \\
+        &= \sum_a \pi(a | s) \sum_{\nextstate, r} p(\nextstate, r | s, a) \left[ r + \gamma v_\pi(\nextstate) \right]
+    \end{align*}
+
+    \subsubsection*{Action-Value Function}
+
+    \begin{align*}
+        q_{\pi}(s, a) = \mathbb{E} \left[ \sum_{k=0}^{\infty} \gamma^k R_{t + k + 1} \bigg\rvert S_t = s, A_t = a \right]
+    \end{align*}
+
+    \subsection*{Temporal Difference Learning}
+
+    \subsubsection*{Q-Learning}
+
+    \begin{align*}
+        Q(S_t, A_t) &=
+        Q(S_t , A_t) +
+        \alpha \left[
+        R_{t + 1} +
+        \gamma \max_a Q(S_{t + 1}, a) - Q(S_t, A_t)
+        \right]
+    \end{align*}
+
+    \subsubsection*{Sarsa}
 
     \begin{align*}
         Q(S_t, A_t) &=
@@ -15,7 +66,7 @@
         \right]
     \end{align*}
 
-    \subsection*{Expected Sarsa}
+    \subsubsection*{Expected Sarsa}
 
     \begin{align*}
         Q(S_t, A_t) &=
@@ -35,15 +86,12 @@
         \right]
     \end{align*}
 
-    \subsection*{Q-Learning}
+    \subsection*{Other Learning Methods}
 
-    \begin{align*}
-        Q(S_t, A_t) &=
-        Q(S_t , A_t) +
-        \alpha \left[
-        R_{t + 1} +
-        \gamma \max_a Q(S_{t + 1}, a) - Q(S_t, A_t)
-        \right]
-    \end{align*}
+    \subsubsection*{Dynamic Programming}
+
+    \subsubsection*{Monte Carlo}
+
+    \subsubsection*{Extensions}
 
 \end{document}
