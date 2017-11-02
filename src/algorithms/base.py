@@ -43,4 +43,15 @@ class EpisodicTDLearner(object):
 		return self
 
 	def compute_estimate(self, state, action, new_state, reward, next_action):
+		current_value = self.Q.get_value(state, action)
+
+		new_estimate = current_value + self.alpha(state) * (
+			reward.value +
+			self.gamma(state) * self.compute_next_value_estimate(state, action, new_state, next_action) -
+			current_value
+		)
+
+		return new_estimate
+
+	def compute_next_value_estimate(self, state, action, new_state, next_action):
 		raise NotImplementedError

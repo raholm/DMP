@@ -37,11 +37,31 @@ class Policy(object):
 		value_function : ValueFunction
 		    The value function with current estimates.
 
-
 		Returns
 		-------
 		action : Action
 		    The optimal greedy action.
+		"""
+		raise NotImplementedError
+
+	def get_action_probabilities(self, state, value_function):
+		"""
+		Gets the action probabilities in the state.
+
+		Parameters
+		----------
+		state : State
+		    The state of the agent.
+		value_function : ValueFunction
+		    The value function with current estimates.
+
+		Returns
+		-------
+		actions : List of Action
+		    A list of available actions in the state.
+
+		probabilities : Array of Float
+		    A list of probabilities of taking the corresponding action in the state.
 		"""
 		raise NotImplementedError
 
@@ -52,7 +72,21 @@ class GreedyPolicy(Policy):
 
 	def get_optimal_action(self, state, value_function):
 		actions = self.env.get_valid_actions(state)
+		return self._get_optimal_action(state, actions, value_function)
 
+	def get_action_probabilities(self, state, value_function):
+		actions = self.env.get_valid_actions(state)
+		probabilities = np.zeros(len(actions))
+
+		optimal_action = self._get_optimal_action(state, actions, value_function)
+
+		for i, action in enumerate(actions):
+			if action == optimal_action:
+				probabilities[i] = 1
+
+		return actions, probabilities
+
+	def _get_optimal_action(self, state, actions, value_function):
 		if isinstance(value_function, ActionValueFunction):
 			return self._get_action_by_action_value(state, actions, value_function)
 
@@ -73,7 +107,7 @@ class GreedyPolicy(Policy):
 		return best_action
 
 	def _get_action_by_state_value(self, state, actions, value_function):
-		pass
+		raise NotImplementedError
 
 
 class EpsilonGreedyPolicy(GreedyPolicy):
@@ -94,3 +128,16 @@ class EpsilonGreedyPolicy(GreedyPolicy):
 
 	def get_optimal_action(self, state, value_function):
 		return super().get_optimal_action(state, value_function)
+
+	def get_action_probabilities(self, state, value_function):
+		actions = self.env.get_valid_actions(state)
+		n = len(actions)
+		probabilities = np.full(n, self.epsilon * (1 / n))
+
+		optimal_action = self._get_optimal_action(state, actions, value_function)
+
+		for i, action in enumerate(actions):
+			if action == optimal_action:
+				probabilities[i] += 1 - self.epsilon
+
+		return actions, probabilities
