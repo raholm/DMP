@@ -30,7 +30,7 @@
         Q(S_t , A_t) +
         \alpha \left[
         R_{t + 1} +
-        \gamma \sum_a \pi (a | S_{t + 1}) Q(S_{t + 1}, A_{t + 1}) -
+        \gamma \sum_a \pi (a | S_{t + 1}) Q(S_{t + 1}, a) -
         Q(S_t, A_t)
         \right]
     \end{align*}
@@ -42,7 +42,7 @@
         Q(S_t , A_t) +
         \alpha \left[
         R_{t + 1} +
-        \gamma \max_a Q(S_{t + 1}, A_{t + 1}) - Q(S_t, A_t)
+        \gamma \max_a Q(S_{t + 1}, a) - Q(S_t, A_t)
         \right]
     \end{align*}
 
