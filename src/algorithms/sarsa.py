@@ -8,7 +8,7 @@ class Sarsa(EpisodicTDLearner):
 
 class ExpectedSarsa(EpisodicTDLearner):
 	def compute_next_value_estimate(self, state, action, new_state, next_action):
-		actions, probabilities = self.policy.get_action_probabilities(new_state)
+		actions, probabilities = self.policy.get_action_probabilities(new_state, self.Q)
 		estimate = 0
 
 		for action, probability in zip(actions, probabilities):

@@ -11,11 +11,13 @@ class EpisodicTDLearner(object):
 		self.rewards_per_episode = None
 		self.actions_per_episode = None
 		self.exploratory_actions_per_episode = None
+		self.food_count_per_episode = None
 
 	def train(self, env, n_episodes):
-		self.rewards_per_episode = np.zeros(n_episodes)
-		self.actions_per_episode = np.zeros(n_episodes)
-		self.exploratory_actions_per_episode = np.zeros(n_episodes)
+		self.rewards_per_episode = np.zeros(n_episodes, dtype=np.int)
+		self.actions_per_episode = np.zeros(n_episodes, dtype=np.uint)
+		self.exploratory_actions_per_episode = np.zeros(n_episodes, dtype=np.uint)
+		self.food_count_per_episode = np.zeros(n_episodes, dtype=np.uint8)
 
 		for iteration in range(n_episodes):
 			if iteration % 10000 == 0:
@@ -39,6 +41,8 @@ class EpisodicTDLearner(object):
 				self.rewards_per_episode[iteration] += reward.value
 				self.actions_per_episode[iteration] += 1
 				self.exploratory_actions_per_episode[iteration] += self.policy.exploratory
+
+			self.food_count_per_episode[iteration] = env.food_count
 
 		return self
 
