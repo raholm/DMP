@@ -11,26 +11,27 @@ def train():
 	params = SnakeParameters()
 	env = SnakeEnvironment(params)
 	params.policy = EpsilonGreedyPolicy(env, params.epsilon)
-	output_dir = "../../../models/qlearning/state"
 
 	exp_params = ExperimentParameters()
 	exp_params.env = env
 	exp_params.model_class = QLearning
 	exp_params.model_params = params
+
+	output_dir = "../../../models/qlearning/state/%i" % exp_params.seed
 	exp_params.model_output_dir = output_dir
 
 	train_models(exp_params)
 
 
 def analyze():
-	output_dir = "../../../models/qlearning/state"
-
 	exp_params = ExperimentParameters()
+
+	output_dir = "../../../models/qlearning/state/%i" % exp_params.seed
 	exp_params.model_output_dir = output_dir
 
 	analyze_models(exp_params)
 
 
 if __name__ == "__main__":
-	train()
+	# train()
 	analyze()

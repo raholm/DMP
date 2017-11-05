@@ -14,6 +14,7 @@ class SnakeEnvironment(Environment):
 		self.food = None
 		self.food_count = None
 		self.episode_running = True
+		self.death_from_self_collision = None
 
 		self.start_new_episode()
 
@@ -22,6 +23,7 @@ class SnakeEnvironment(Environment):
 		self.food = self.__create_food()
 		self.food_count = 0
 		self.episode_running = True
+		self.death_from_self_collision = False
 
 		self.__update_board()
 
@@ -61,10 +63,12 @@ class SnakeEnvironment(Environment):
 		# Snake is outside board
 		if (self.snake.head[0] < 0 or self.snake.head[0] >= self.board.rows) or \
 				(self.snake.head[1] < 0 or self.snake.head[1] >= self.board.cols):
+			self.death_from_self_collision = False
 			return True
 
 		# Snake is colliding with itself
 		if self.board[self.snake.head] == SnakeCellType.Snake:
+			self.death_from_self_collision = True
 			return True
 
 		return False

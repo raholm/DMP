@@ -1,7 +1,7 @@
 from src.core.discount_factor import StaticDiscountFactor
 from src.core.learning_rate import StaticLearningRate
 from src.core.value_function import DictActionValueFunction
-from src.snake.reward import DefaultSnakeReward
+from src.snake.reward import NegativeTravelPositiveFood
 from src.snake.snake import SnakeDirection
 from src.snake.state import SnakeFoodScoreState
 
@@ -23,7 +23,7 @@ class SnakeParameters(object):
 		self.tail_size_increase = 1
 
 		self.state = SnakeFoodScoreState
-		self.reward = DefaultSnakeReward
+		self.reward = NegativeTravelPositiveFood
 
 		# Learning Related
 		self.discount_factor = StaticDiscountFactor(0.85)
@@ -35,11 +35,11 @@ class SnakeParameters(object):
 
 	@property
 	def file_str(self):
-		return "%s_%s_%s_%s_%s_%i_%i_%ix%i" % (self.state.__name__,
-											   self.reward.__name__,
-											   self.policy.__class__.__name__,
-											   self.discount_factor.__class__.__name__,
-											   self.learning_rate.__class__.__name__,
-											   self.train_episodes,
-											   self.epsilon,
-											   self.rows, self.cols)
+		return "%s_%s_%s_%s_%s_%i_%.2f_%ix%i" % (self.state.__name__,
+												 self.reward.__name__,
+												 self.policy.__class__.__name__,
+												 self.discount_factor.__class__.__name__,
+												 self.learning_rate.__class__.__name__,
+												 self.train_episodes,
+												 self.epsilon,
+												 self.rows, self.cols)
