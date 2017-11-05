@@ -22,10 +22,9 @@ class SnakeParameters(object):
 		self.initial_snake_direction = SnakeDirection.East
 		self.tail_size_increase = 1
 
+		# Learning Related
 		self.state = SnakeFoodScoreState
 		self.reward = NegativeTravelPositiveFood
-
-		# Learning Related
 		self.discount_factor = StaticDiscountFactor(0.85)
 		self.learning_rate = StaticLearningRate(0.15)
 		self.epsilon = 0.15
