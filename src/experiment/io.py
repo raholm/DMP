@@ -1,6 +1,6 @@
 import os
 
-from src.util.io import read_learner
+from src.util.io import read_model
 
 
 def read_models(params):
@@ -11,6 +11,6 @@ def read_models(params):
 		for file in files:
 			file_path = os.path.join(subdir, file)
 			filenames.append(file)
-			models.append(read_learner(file_path))
+			models.append(read_model(file_path))
 
 	return models, filenames

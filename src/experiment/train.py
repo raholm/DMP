@@ -1,7 +1,7 @@
 import os
 from timeit import default_timer as timer
 
-from src.util.io import write_learner
+from src.util.io import write_model
 
 
 def train_and_store_model(params):
@@ -16,6 +16,6 @@ def train_and_store_model(params):
 
 	print("Training time:", timer() - start)
 
-	write_learner(learner, os.path.join(params.model_output_dir, "%s.p" % params.model_params.file_str))
+	write_model(learner, os.path.join(params.model_output_dir, "%s.p" % params.model_params.file_str))
 
 	return learner

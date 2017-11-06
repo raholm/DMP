@@ -10,7 +10,7 @@ class ExperimentParameters(object):
 		self._model_output_dir = None
 		self._image_output_dir = None
 
-		self.seed = 1234
+		self.seed = 123
 
 	@property
 	def model_output_dir(self):
