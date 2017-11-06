@@ -1,9 +1,13 @@
 import pickle
 
 
-def write_learner(learner, outfile):
-	pickle.dump(learner, open(outfile, "wb"))
+def write_model(model, outfile):
+	with open(outfile, "wb") as ofile:
+		pickle.dump(model, ofile)
 
 
-def read_learner(infile):
-	return pickle.load(open(infile, "rb"))
+def read_model(infile):
+	with open(infile, "rb") as ifile:
+		model = pickle.load(ifile)
+
+	return model

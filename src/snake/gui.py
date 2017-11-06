@@ -1,15 +1,19 @@
+import importlib
 import sys
 
+import os
 from PyQt5.QtCore import Qt, pyqtSlot, QBasicTimer
 from PyQt5.QtGui import QPainter, QColor
 from PyQt5.QtWidgets import *
 
+from src.core.policy import EpsilonGreedyPolicy
 from src.snake.action import SnakeAction
-from src.snake.agent import SnakePlayer
+from src.snake.agent import SnakePlayer, SnakeAgent
 from src.snake.board import SnakeCellType
 from src.snake.environment import SnakeEnvironment
 from src.snake.parameters import SnakeParameters
 from src.util.color import Color
+from src.util.io import read_model
 
 
 class GameWidget(QWidget):
@@ -106,7 +110,9 @@ class CreateWindow(QMainWindow):
 class Window(QMainWindow):
 	def __init__(self, env, agent, params):
 		super().__init__()
-		self.setGeometry(50, 50, params.rows * params.cell_size, params.cols * params.cell_size)
+		self.setGeometry(50, 50,
+						 params.rows * params.cell_size,
+						 params.cols * params.cell_size)
 		self.setWindowTitle("SnakeBot")
 
 		self.game_widget = GameWidget(env, params, self)
@@ -233,7 +239,31 @@ class Window(QMainWindow):
 
 	@pyqtSlot()
 	def __on_push_import(self):
-		print("Import Agent")
+		filename = QFileDialog.getOpenFileName(self, "Import Model",
+											   os.getcwd(), "Pickle files (*.p)")[0]
+		filename_parts = filename.split("/")[-1].split("_")
+
+		model = read_model(filename)
+
+		state_class_name = filename_parts[0]
+		reward_class_name = filename_parts[1]
+
+		state_module = importlib.import_module("src.snake.state")
+		reward_module = importlib.import_module("src.snake.reward")
+
+		state_class = getattr(state_module, state_class_name)
+		reward_class = getattr(reward_module, reward_class_name)
+
+		self.params.state = state_class
+		self.params.reward = reward_class
+
+		self.game_widget = GameWidget(self.env, self.params, self)
+		self.setCentralWidget(self.game_widget)
+
+		agent = SnakeAgent(policy=EpsilonGreedyPolicy(self.env, 0),
+						   action_value_function=model.Q)
+
+		self.agent_widget = AgentWidget(agent=agent, parent=self)
 
 	@pyqtSlot()
 	def __on_push_export(self):
