@@ -26,12 +26,15 @@ def train():
 def analyze():
 	exp_params = ExperimentParameters()
 
-	output_dir = "../../../models/sarsa/state/%i" % exp_params.seed
-	exp_params.model_output_dir = output_dir
+	model_output_dir = "../../../models/sarsa/state/%i" % exp_params.seed
+	exp_params.model_output_dir = model_output_dir
+
+	image_output_dir = "../../../images/sarsa/state/%i" % exp_params.seed
+	exp_params.image_output_dir = image_output_dir
 
 	analyze_models(exp_params)
 
 
 if __name__ == "__main__":
-	train()
-	# analyze()
+	# train()
+	analyze()
