@@ -95,8 +95,25 @@ def create_state_plots_file():
 		outfile.write(document)
 
 
+def create_reward_plots_file():
+	models = ["qlearning", "sarsa", "expected_sarsa"]
+
+	images = []
+
+	for model in models:
+		images += list(get_plot_files(model, "reward", "12345"))
+
+	images.sort()
+
+	document = create_document(images)
+
+	with open("reward_plots.tex", "w") as outfile:
+		outfile.write(document)
+
+
 def main():
 	create_state_plots_file()
+	create_reward_plots_file()
 
 
 if __name__ == "__main__":

@@ -13,6 +13,6 @@ def compute_mean_over_time(x):
 
 	for t in range(1, len(mean_over_time)):
 		previous_mean = mean_over_time[t - 1]
-		mean_over_time[t] = previous_mean + (1 / t) * (x[t] - previous_mean)
+		mean_over_time[t] = previous_mean + (x[t] - previous_mean) / t
 
 	return mean_over_time
