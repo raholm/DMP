@@ -15,6 +15,8 @@ def create_document(images):
 \\usepackage{graphicx}
 \\usepackage{subcaption}
 \\usepackage{float}
+\\usepackage[font={footnotesize}]{caption}
+
 		
 \\begin{document}
 		"""
@@ -25,43 +27,39 @@ def create_document(images):
 		"""
 
 	image_graphic = \
-		"""
-\\begin{figure}[H]
-\\centering
-\\includegraphics[scale=0.5]{%s}
-\\end{figure}
-		"""
-
-	image_graphic = \
-		"""
-		\\begin{figure*}
+		"""		
+		\\begin{figure}[!htb]
 			\\centering
-			\\begin{subfigure}[b]{0.475\\textwidth}
+			\\begin{subfigure}[t]{0.475\\textwidth}
 				\\centering
-				\\includegraphics[width=\\textwidth]{%s}
+				\\includegraphics[height=0.2\\textheight, width=\\textwidth]{%s}
 			\\end{subfigure}
 			\\hfill
-			\\begin{subfigure}[b]{0.475\\textwidth}  
+			\\begin{subfigure}[t]{0.475\\textwidth}  
 				\\centering 
-				\\includegraphics[width=\\textwidth]{%s}
+				\\includegraphics[height=0.2\\textheight, width=\\textwidth]{%s}
 			\\end{subfigure}
 			\\vskip\\baselineskip
-			\\begin{subfigure}[b]{0.475\\textwidth}   
+			\\begin{subfigure}[t]{0.475\\textwidth}   
 				\\centering 
-				\\includegraphics[width=\\textwidth]{%s}
+				\\includegraphics[height=0.2\\textheight, width=\\textwidth]{%s}
 			\\end{subfigure}
 			\\quad
-			\\begin{subfigure}[b]{0.475\\textwidth}   
+			\\begin{subfigure}[t]{0.475\\textwidth}   
 				\\centering 
-				\\includegraphics[width=\\textwidth]{%s}
+				\\includegraphics[height=0.2\\textheight, width=\\textwidth]{%s} 
 			\\end{subfigure}
-		\\end{figure*}
+			\\caption{%s : %s}
+		\\end{figure}
 		"""
 
 	text = prefix
+	get_algorithm = lambda image: image.split("/")[2].replace("_", " ")
+	get_caption = lambda image: " ".join(image.split("/")[-1].split(".")[0].split("_")[:-4])
 
 	for image1, image2, image3, image4 in grouper(images, 4):
-		text += image_graphic % (image1, image2, image3, image4,)
+		text += image_graphic % (image1, image2, image3, image4,
+								 get_algorithm(image1), get_caption(image1))
 
 	text += postfix
 
@@ -112,7 +110,7 @@ def create_reward_plots_file():
 
 
 def main():
-	create_state_plots_file()
+	# create_state_plots_file()
 	create_reward_plots_file()
 
 
