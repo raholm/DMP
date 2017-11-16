@@ -51,12 +51,12 @@ def plot_exploration_vs_exploitation_over_time(learner):
 	plt.ylabel("Exploration (%)")
 
 
-def plot_multi_average_reward_over_time(rewards_per_episode, labels):
+def plot_multi_average_reward_over_time(x, rewards_per_episode, labels):
 	mean_reward_over_time = [compute_mean_over_time(rpe)
 							 for rpe in rewards_per_episode]
 
 	for label, mrot in zip(labels, mean_reward_over_time):
-		plt.semilogx(mrot, label=label)
+		plt.semilogx(x, mrot, label=label)
 
 	plt.title("Average Reward Over Time")
 	plt.xlabel("# of episodes")
@@ -64,12 +64,12 @@ def plot_multi_average_reward_over_time(rewards_per_episode, labels):
 	plt.legend()
 
 
-def plot_multi_average_actions_over_time(actions_per_episode, labels):
+def plot_multi_average_actions_over_time(x, actions_per_episode, labels):
 	average_actions_over_time = [compute_mean_over_time(ape)
 								 for ape in actions_per_episode]
 
 	for label, aaot in zip(labels, average_actions_over_time):
-		plt.semilogx(aaot, label=label)
+		plt.semilogx(x, aaot, label=label)
 
 	plt.title("Average # of Actions Over Time")
 	plt.xlabel("# of episodes")
@@ -77,12 +77,12 @@ def plot_multi_average_actions_over_time(actions_per_episode, labels):
 	plt.legend()
 
 
-def plot_multi_average_food_count_over_time(food_count_per_episode, labels):
+def plot_multi_average_food_count_over_time(x, food_count_per_episode, labels):
 	average_food_count_over_time = [compute_mean_over_time(fcpe)
 									for fcpe in food_count_per_episode]
 
 	for label, afcot in zip(labels, average_food_count_over_time):
-		plt.semilogx(afcot, label=label)
+		plt.semilogx(x, afcot, label=label)
 
 	plt.title("Average Food Count Over Time")
 	plt.xlabel("# of episodes")
@@ -90,12 +90,12 @@ def plot_multi_average_food_count_over_time(food_count_per_episode, labels):
 	plt.legend()
 
 
-def plot_multi_average_self_collision_death_over_time(self_collision_death_per_episode, labels):
+def plot_multi_average_self_collision_death_over_time(x, self_collision_death_per_episode, labels):
 	average_self_collision_death_over_time = [compute_mean_over_time(scdpe)
 											  for scdpe in self_collision_death_per_episode]
 
 	for label, ascdot in zip(labels, average_self_collision_death_over_time):
-		plt.semilogx(ascdot, label=label)
+		plt.semilogx(x, ascdot, label=label)
 
 	plt.title("Average Self-Collision Death Over Time")
 	plt.xlabel("# of episodes")
