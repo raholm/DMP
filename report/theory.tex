@@ -44,16 +44,22 @@
 
     \subsection*{Temporal Difference Learning}
 
+    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It update new estimates partially on previous estimates without waiting for the final outcome, i.e. bootstraps estimates. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below.
+
     \subsubsection*{Q-Learning}
+
+    Q-learning is a widely used algorithm that was developed by \textbf{(Watkins, 1989)} and is heavily used to day combined with the emergence of neural networks \textbf{deep reinforcement learning, atari}. It is defined as
 
     \begin{align*}
         Q(S_t, A_t) &=
         Q(S_t , A_t) +
         \alpha \left[
         R_{t + 1} +
-        \gamma \max_a Q(S_{t + 1}, a) - Q(S_t, A_t)
+        \gamma \max_a Q(S_{t + 1}, a) - Q(S_t, A_t).
         \right]
     \end{align*}
+
+    It is a so called \textit{off-policy} method which is indicated by the $\max_a$ operation. That means it uses a greedy algorithm to estimate the return at the next step rather than following its current policy, therefore is off its own policy. The Sarsa algorithm described below is an example of a on-policy method.
 
     \subsubsection*{Sarsa}
 
