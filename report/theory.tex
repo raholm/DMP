@@ -8,7 +8,7 @@
 
     \subsection*{Framework}
 
-    To begin the definition of the reinforcement learning problem we first need to define a few fundamental terms that are required in the following formalization. The basic idea is to learn from interactions in order to achieve a goal. The learner is called the \textit{agent} which interacts with the \textit{environment} by performing \textit{actions} in a sequence. The agent is continuously interacting with the environment and it responds based on those interactions in the form of a representation of the \textit{state} of the environment. Not only may the environment change its state, it also give rise to \textit{rewards}, numerical values that the agent is trying to maximize. Figure \ref{fig:agent_env} shows the interactions between the agent and the environment. A complete specification of an environment and how its rewards are determined defines a \textit{task}, which is an instance of a reinforcement learning problem.
+    To begin the definition of the reinforcement learning problem we first need to define a few fundamental terms that are required in the following formalization. The basic idea is to learn from interactions in order to achieve a goal. The learner is called the \textit{agent} which interacts with the \textit{environment} by performing \textit{actions} in a sequential manner. The agent is continuously interacting with the environment and it responds based on those interactions in the form of a representation of the \textit{state} of the environment. Not only may the environment change its state, it also give rise to \textit{rewards}, numerical values that the agent is trying to maximize. Figure \ref{fig:agent_env} shows the interactions between the agent and the environment. A complete specification of an environment and how its rewards are determined defines a \textit{task}, which is an instance of a reinforcement learning problem.
 
     \begin{figure}[H]
         \centering
@@ -37,7 +37,7 @@
 
     \subsubsection*{Dynamics}
 
-    We will now formalize the reinforcement learning problem through the \textit{Markov Decision Process} (MDP), in particular the \textit{finite} MDP, by sticking to the limitations mentioned above. This formalization assumes that the problem satisfies the \textit{Markov property} which means that the one-step dynamics of the problem holds the following
+    We will now formalize the reinforcement learning problem through the \textit{Markov Decision Process} (MDP), in particular the \textit{finite} MDP, by sticking to the limitations mentioned above. This formalization assumes that the problem satisfies the \textit{Markov property} which means that the one-step dynamics of the problem hold the following
 
     \begin{align*}
         Pr(S_{t + 1} = \nextstate, R_{t + 1} = r | S_0, A_0, R_1, \ldots, S_{t - 1}, A_{t - 1}, R_t, S_t, A_t) = Pr(S_{t + 1} = \nextstate, R_{t + 1} = r | S_t, A_t),
@@ -68,14 +68,16 @@
         \pi(a | s) &= Pr(A_t = a | S_t = s).
     \end{align*}
 
-    It fully defines the behavior of an agent. It maps an observed state into an action and it could be stochastic in order to enforce \textit{exploration} which we will come back to later.
+    It fully defines the behavior of an agent. It maps an observed state into an action and it could be stochastic in order to enforce \textit{exploration} which we will come back to later. A policy could be as simple as a lookup table or a complicated search process which further makes this framework very flexible.
 
     \subsubsection*{Reward}
 
-    The return $G_t$
+    The \textit{reward signal} is an essential part to learning that will guide the agent to the target behavior. This implies that it is very important that during the construction of your reinforcement learning problem the underlying reward function that generates the rewards should reflect what you would consider good and bad behavior. As a simple example, in the game of chess you would consider winning as good and losing as bad and so the reward should reflect that by for instance give +1 reward for winning and -1 reward for losing.
+
+    The sole goal of the agent is the maximize the total reward it receives of the long run so we define the return $G_t$ as
 
     \begin{align*}
-        G_t = R_{t + 1} + \gamma R_{t + 2} + \ldots = \sum_{k = 0}^{\infty} \gamma^k R_{t + k + 1}
+        G_t = R_{t + 1} + \gamma R_{t + 2} + \ldots = \sum_{k = 0}^{\infty} \gamma^k R_{t + k + 1},
     \end{align*}
 
     where $\gamma \in \left[0, 1 \right]$ is the \textit{discount factor} that determines how much weight the agent should focus on immediate rewards versus future rewards. By adding the discount factor $\gamma < 1$ to $G_t$ we bound it so it does not become $\infty$. The goal of reinforcement learning is to maximize the return $G_t$ but since it is a random variable what we actually do care about is the \textit{state-value function}
@@ -94,7 +96,7 @@
 
     In words these functions expresses the expected return starting from state $s$ and then following policy $\pi$, and the expected return starting from state $s$ and performing action $a$ and then following policy $\pi$ respectively.
 
-    These recursive equations are known as the Bellman equations discovered by Richard Bellman in the 1950s. What are are interested in is finding the Bellman optimality equations
+    These recursive equations are known as the Bellman equations discovered by Richard Bellman in the 1950s. What we are interested in is finding the Bellman optimality equations
 
     \begin{align*}
         v_{\ast}(s)
@@ -107,7 +109,7 @@
         \forall_s q_{\ast}(s, a) &\geq \forall_{s, \pi} q_{\pi}(s, a),
     \end{align*}
 
-    and having those makes it trivial to find the optimal policy that maximizes the expected return which is the goal of the agent and it turns out that there always exists such a policy, possibly multiple such policies.
+    and having those makes it trivial to find the optimal policy that maximizes the expected return which is the goal of the agent. It turns out that there always exists such a policy, possibly multiple such policies.
 
     The optimal policy $\pi_\ast$ is
 
@@ -124,7 +126,7 @@
         \end{cases} \\
     \end{align*}
 
-    and we can clearly see that is it easier to acquire the optimal policy if we have access to the optimal action-value function. The problem is that there are, in general, no closed form solution to finding these optimal value functions and so there comes the difficulty in reinforcement learning. After a short explanation of exploration we will present a few iterative solution methods for finding these optimal value function, the action-value function in particular, that have been used in this report.
+    and we can clearly see that is it easier to acquire the optimal policy if we have access to the optimal action-value function. The problem is that there are, in general, no closed form solution to finding these optimal value functions and so there in the difficulty of reinforcement learning. After a short explanation of exploration we will present a few iterative solution methods for finding these optimal value functions, the action-value function in particular, that have been used in this report.
 
     \subsubsection*{Exploration versus Exploitation}
 
@@ -134,9 +136,9 @@
         \KwData{State $s$, Value function $q$, Exploration rate $\epsilon \in [0, 1]$}
         \KwResult{Action $a$}
 
-        $u \sim U(0, 1)$ \\
+        sample $u \sim U(0, 1)$ \\
         \eIf{$u < \epsilon$}{
-        $i \sim U(\{ 1, 2, \ldots, |\actionspace| \})$ \\
+        sample $i \sim U(\{ 1, 2, \ldots, |\actionspace| \})$ \\
         $a = \actionspace_i$ \\
         }{
         $a = \displaystyle\argmax_a q(s, a)$
