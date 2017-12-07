@@ -34,7 +34,10 @@ class GameWidget(QWidget):
 				y = col * height
 
 				if self.env.board[row, col] == SnakeCellType.Snake:
-					color = Color.Green.value
+					if self.env.snake.head == (row, col):
+						color = Color.Orange.value
+					else:
+						color = Color.Green.value
 				elif self.env.board[row, col] == SnakeCellType.Food:
 					color = Color.Red.value
 				else:
