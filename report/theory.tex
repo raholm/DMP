@@ -21,7 +21,7 @@
 
     \subsection*{Markov Decision Process}
 
-    We are going to limit our problem formalization to a special case with discrete time steps, finite state space, finite action space, fully observable state, and episodic tasks. It can be generalized to continuous time steps, infinite state space, infinite action space, partially observable state, and continuing tasks, but it is out of scope for this report.
+    We are going to limit our problem formalization to a special case with discrete time steps, finite state space, finite action space, fully observable state, and episodic tasks. It can be generalized to continuous time steps, infinite state space, infinite action space, partially observable state, and continuing tasks, but it is out of scope for this report. Bertsekas and Tsitsiklis give an in-depth coverage of reinforcement learning, also known as optimal control, in \textit{Neuro-dynamic programming} \cite{bertsekas1995neuro}
 
     \subsubsection*{Notation}
 
@@ -126,7 +126,7 @@
         \end{cases} \\
     \end{align*}
 
-    and we can clearly see that is it easier to acquire the optimal policy if we have access to the optimal action-value function. The problem is that there are, in general, no closed form solution to finding these optimal value functions and so there in the difficulty of reinforcement learning. After a short explanation of exploration and the problem we will present a few iterative solution methods for finding these optimal value functions, the action-value function in particular, that have been used in this report.
+    and we can clearly see that is it easier to acquire the optimal policy if we have access to the optimal action-value function. The problem is that there are, in general, no closed form solution to finding these optimal value functions and so there in the difficulty of reinforcement learning. After a short explanation of exploration and the problem we will present a few iterative solution methods for approximating these optimal value functions, the action-value function in particular, that have been used in this report.
 
     \subsubsection*{Exploration versus Exploitation}
 
@@ -176,11 +176,38 @@
 
     \subsection*{Temporal Difference Learning}
 
-    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It update new estimates partially on previous estimates without waiting for the final outcome, i.e. bootstraps estimates. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below.
+    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It update new estimates partially on previous estimates without waiting for the final outcome, i.e., using bootstrapping. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td-learning} shows the general outline of how it works and what will differ between the presented algorithms is line 9, the update rule of $Q(S, A)$.
+
+    \begin{algorithm}[H]
+        \caption{TD Learning}
+        \label{alg:td-learning}
+        \begin{algorithmic}[1]
+            \Require{Learning rate $\alpha \in [0, 1]$, Discount factor $\gamma \in [0, 1]$}
+            \Statex
+            \Function{TDLearning}{$\alpha, \gamma$}
+            \Let{Initialize $\forall_{a \in \actionspace, s \in \statespace} Q(a, s)$ arbitrarily and $Q$(terminal state, $\cdot$) = 0}
+
+            \For{each episode}
+            \Let{Initialize $S$}
+            \Let{Choose $A$ from $S$ using policy $\pi$ derived from $Q$ ($\epsilon$-greedy)}
+
+            \While{$S$ is non-terminal state}
+            \Let{Take action $A$, observe $R$, $S^\prime$}
+            \Let{Choose $A^\prime$ from $S^\prime$ using policy $\pi$ derived from $Q$ ($\epsilon$-greedy)}
+            \Let{Update $Q(S, A)$ based on $(A, S, A^\prime$, $S^\prime, \alpha, \gamma$)}
+            \Let{$S = S^\prime$}
+            \Let{$A = A^\prime$}
+            \EndWhile
+            \EndFor
+            \State
+            \Return{Q}
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
 
     \subsubsection*{Q-Learning}
 
-    Q-learning is a widely used algorithm that was developed by \textbf{(Watkins, 1989)} and is heavily used to day combined with the emergence of neural networks \textbf{deep reinforcement learning, atari}. It is defined as
+    \textit{Q-learning} is a widely used algorithm that was developed by Watkins \cite{watkins1989learning} and variations of it is heavily used today combined with the emergence of neural networks \cite{mnih2013playing}. The update rule is defined as
 
     \begin{align*}
         Q(S_t, A_t) &=
@@ -191,9 +218,11 @@
         \right]
     \end{align*}
 
-    It is a so called \textit{off-policy} method which is indicated by the $\max_a$ operation. That means it uses a greedy algorithm to estimate the return at the next step rather than following its current policy, therefore is off its own policy. The Sarsa algorithm described below is an example of a on-policy method.
+    It is a so called \textit{off-policy} method which is indicated by the $\max_a$ operation. That means it uses a greedy algorithm to estimate the return at the next step rather than following its current policy, therefore is off its own policy.
 
     \subsubsection*{Sarsa}
+
+    \textit{Sarsa} on the other hand is an on-policy method for estimating the action-value function and its name refers to that we use the quintuple of events $(S_t, A_t, R_{t + 1}, S_{t + 1}, A_{t + 1})$, and it has the update rule
 
     \begin{align*}
         Q(S_t, A_t) &=
@@ -201,10 +230,10 @@
         \alpha \left[
         R_{t + 1} +
         \gamma Q(S_{t + 1}, A_{t + 1}) - Q(S_t, A_t)
-        \right]
+        \right].
     \end{align*}
 
-    \subsubsection*{Expected Sarsa}
+    The difference betwen Sarsa and Q-learning is that it does not use the $\max$-operator and is rather using its current policy to estimate the next action-value. There is also a natural extension to Sarsa called \textit{Expected Sarsa} which takes the expected action-value estimate under the current policy. The update rule is defined as
 
     \begin{align*}
         Q(S_t, A_t) &=
@@ -221,15 +250,11 @@
         R_{t + 1} +
         \gamma \sum_a \pi (a | S_{t + 1}) Q(S_{t + 1}, a) -
         Q(S_t, A_t)
-        \right]
+        \right].
     \end{align*}
 
     \subsection*{Other Learning Methods}
 
-    \subsubsection*{Dynamic Programming}
-
-    \subsubsection*{Monte Carlo}
-
-    \subsubsection*{Extensions}
+    There are many other learning methods that are not used in this report that have interesting properties. Methods such as those based on \textit{dynamic programming} which is an important optimization method, \textit{monte carlo}, and also extensions to those as well as to the algorithms presented above. We highly recommend the book written by Sutton and Barto \cite{sutton1998reinforcement}.
 
 \end{document}
