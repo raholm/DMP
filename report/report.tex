@@ -14,7 +14,10 @@
 
 \usepackage{amsmath, amssymb}
 \usepackage{bbm}
-\usepackage[]{algorithm2e}
+% \usepackage[]{algorithm2e}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage[noend]{algpseudocode}
 
 \newcommand{\nextstate}{s^\prime}
 \newcommand{\nextaction}{a^\prime}
@@ -25,9 +28,12 @@
 
 \DeclareMathOperator*{\argmax}{argmax}
 
+\newcommand*\Let[1]{\State #1}
+\newcommand*\Let[2]{\State #1 $\gets$ #2}
+
 \begin{document}
     \subfile{titlepage}
-    \subfile{abstract}
+    % \subfile{abstract}
     \newpage
     \subfile{introduction}
     \newpage

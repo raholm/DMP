@@ -72,7 +72,7 @@
 
     \subsubsection*{Reward}
 
-    The \textit{reward signal} is an essential part to learning that will guide the agent to the target behavior. This implies that it is very important that during the construction of your reinforcement learning problem the underlying reward function that generates the rewards should reflect what you would consider good and bad behavior. As a simple example, in the game of chess you would consider winning as good and losing as bad and so the reward should reflect that by for instance give +1 reward for winning and -1 reward for losing.
+    The \textit{reward signal} is an essential part to learning that will guide the agent to the target behavior. This implies that it is crucial that during the construction of your reinforcement learning problem the underlying reward function that generates the rewards should reflect what you want accomplished. As a simple example, in the game of chess you would consider winning as good and losing as bad and so the reward should reflect that by for instance give +1 reward for winning and -1 reward for losing.
 
     The sole goal of the agent is the maximize the total reward it receives of the long run so we define the return $G_t$ as
 
@@ -126,48 +126,53 @@
         \end{cases} \\
     \end{align*}
 
-    and we can clearly see that is it easier to acquire the optimal policy if we have access to the optimal action-value function. The problem is that there are, in general, no closed form solution to finding these optimal value functions and so there in the difficulty of reinforcement learning. After a short explanation of exploration we will present a few iterative solution methods for finding these optimal value functions, the action-value function in particular, that have been used in this report.
+    and we can clearly see that is it easier to acquire the optimal policy if we have access to the optimal action-value function. The problem is that there are, in general, no closed form solution to finding these optimal value functions and so there in the difficulty of reinforcement learning. After a short explanation of exploration and the problem we will present a few iterative solution methods for finding these optimal value functions, the action-value function in particular, that have been used in this report.
 
     \subsubsection*{Exploration versus Exploitation}
 
-    An important concept in reinforcement learning is the \textit{exploration-exploitation} trade-off.
+    An important concept in reinforcement learning is the \textit{exploration-exploitation} trade-off. It refers to the problem that the agent does not know how it should behave to maximize the expected return and thus have to interact with the environment to learn by trial-and-error. This means that it has to explore the environment by interactions and observe their consequences and the reward signals. This information does not contain what the "right" action was supposed to be but the agent can still construct a policy from it. Exploting means that the agent is using its current policy to determine the best action, i.e., is greedy with respect to the policy. It can happen that the current policy is stuck in a local optima because the agent has not explored the search space thorough enough to build a good estimate of the other action performances.
+
+    A simple technique to enforcing exploration is by training using $\epsilon$-greedy policy that take the greedy action with probability $1 - \epsilon$ and a uniformly random action with probability $\epsilon$. This is the approach taken in this report but there are more sophisticated techniques to balance these two acts.
 
     \begin{algorithm}[H]
-        \KwData{State $s$, Value function $q$, Exploration rate $\epsilon \in [0, 1]$}
-        \KwResult{Action $a$}
-
-        sample $u \sim U(0, 1)$ \\
-        \eIf{$u < \epsilon$}{
-        sample $i \sim U(\{ 1, 2, \ldots, |\actionspace| \})$ \\
-        $a = \actionspace_i$ \\
-        }{
-        $a = \displaystyle\argmax_a q(s, a)$
-        }
         \caption{$\epsilon$-Greedy Policy}
+        \label{alg:epslion-greedy-policy}
+        \begin{algorithmic}[1]
+            \Require{State $s$, Action-value function $q$,
+            Exploration rate $\epsilon \in [0, 1]$}
+            \Statex
+            \Function{EpsilonGreedyPolicy}{$s, q, \epsilon$}
+            \Let{sample $u \sim U(0, 1)$}
+            \If{$u < \epsilon$}
+            \Let{sample $i \sim U(\{ 1, 2, \ldots, |\actionspace| \})$}
+            \Let{$a = \actionspace_i$}
+            \Else
+            \Let{$a = \displaystyle\argmax_a q(s, a)$}
+            \EndIf
+            \State
+            \Return{$a$}
+            \EndFunction
+        \end{algorithmic}
     \end{algorithm}
 
-    %    \begin{align*}
-    %        r(s, a) &=
-    %        \mathbb{E} \left[ R_{t + 1} \bigg\rvert S_t = s, A_t = a \right] =
-    %        \sum_r r \sum_{\nextstate} p(\nextstate, r | s, a) \\
-    %        r(s, a, \nextstate) &=
-    %        \mathbb{E} \left[ R_{t + 1} \bigg\rvert S_t = s, A_t = a, S_{t + 1} = \nextstate \right] =
-    %        \frac{\sum_r r p(\nextstate, r | s, a)}{p(\nextstate | s, a)}
-    %    \end{align*}
-    %
+    \subsection*{Snake}
 
-    %    \subsubsection*{State-Value Function}
-    %
-    %    \begin{align*}
-    %        v_{\pi}(s) &= \mathbb{E} \left[ \sum_{k=0}^{\infty} \gamma^k R_{t + k + 1} \bigg\rvert S_t = s \right] \\
-    %        &= \sum_a \pi(a | s) \sum_{\nextstate, r} p(\nextstate, r | s, a) \left[ r + \gamma v_\pi(\nextstate) \right]
-    %    \end{align*}
-    %
-    %    \subsubsection*{Action-Value Function}
-    %
-    %    \begin{align*}
-    %        q_{\pi}(s, a) = \mathbb{E} \left[ \sum_{k=0}^{\infty} \gamma^k R_{t + k + 1} \bigg\rvert S_t = s, A_t = a \right]
-    %    \end{align*}
+    This report is meant to look at some of the fundamental building blocks of reinforcement learning and in order to do so we need a problem that we would like to solve. Snake is an old game\footnote{https://en.wikipedia.org/wiki/Snake\_(video\_game)} and has been around for a long time and there are many variations of it. In this report, the game is played out as simple as possible with only one player, i.e., the agent and no obstructing environment. The goal of the game is that you play as a snake by controlling the head and the aim is to eat as many apples as possible without colliding with either the snake's body or the edges of the game board. The difficulty is that each time you eat an apple your body becomes longer and thus larger portion of the game board is covered by it. In order to reduce the state space the game board is played on a 5x5 grid which can be seen in figure \ref{fig:snake}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=.3\textwidth]{./images/snake1}\hfill
+        \includegraphics[width=.3\textwidth]{./images/snake2}\hfill
+        \includegraphics[width=.3\textwidth]{./images/snake3}
+        \label{fig:snake}
+        \caption{5x5 board of Snake where the snake consists of the orange (head) and green parts (body) and the red part is the apple.}
+    \end{figure}
+
+    A term that was mentioned previously was \textit{episodic task} which refers to problems that have a natural notion of final time step which Snake does, that is when the snake collides with something. We denote this state as the \textit{terminal state} which will follow with a reset of the game in the same starting state independently of how it ended.
+
+    \subsubsection*{MDP}
+
+    With the previous formalization of the MDP we can now define Snake's MDP and its a rather simple definition. We assume that the actions are completely deterministic and the state transitions are also deterministic. Given our action space, $\actionspace = \{ \text{North}, \text{South}, \text{West}, \text{East} \}$, that means that if the snake moves north it will move north, not any other direction, and the next state will reflect that. Figure \ref{fig:snake} shows three different states that the agent will be able to observe completely. There is no stochasticity in the environment except the positioning of the apple which will be randomly placed uniformly whenever eaten so only one food source at any single point in time. We have chosen that each eaten apple gives the player 10 game points and at the end of the game the total score is thus 10 $\times$ number of apples eaten.
 
     \subsection*{Temporal Difference Learning}
 
