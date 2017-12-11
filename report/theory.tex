@@ -192,9 +192,9 @@
             \Let{Choose $A$ from $S$ using policy $\pi$ derived from $Q$ ($\epsilon$-greedy)}
 
             \While{$S$ is non-terminal state}
-            \Let{Take action $A$, observe $R$, $S^\prime$}
+            \Let{Take action $A$, observe state $S^\prime$ and reward $R$}
             \Let{Choose $A^\prime$ from $S^\prime$ using policy $\pi$ derived from $Q$ ($\epsilon$-greedy)}
-            \Let{Update $Q(S, A)$ based on $(A, S, A^\prime$, $S^\prime, \alpha, \gamma$)}
+            \Let{Update $Q(S, A)$ based on $(S, A, S^\prime, A^\prime, \alpha, \gamma$)}
             \Let{$S = S^\prime$}
             \Let{$A = A^\prime$}
             \EndWhile
@@ -207,7 +207,7 @@
 
     \subsubsection*{Q-Learning}
 
-    \textit{Q-learning} is a widely used algorithm that was developed by Watkins \cite{watkins1989learning} and variations of it is heavily used today combined with the emergence of neural networks \cite{mnih2013playing}. The update rule is defined as
+    \textit{Q-learning} is a widely used algorithm that was developed by Watkins \cite{watkins1989learning} and variations of it is heavily used today combined with the emergence of neural networks \cite{van2016deep}. The update rule is defined as
 
     \begin{align*}
         Q(S_t, A_t) &=
