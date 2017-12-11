@@ -176,7 +176,7 @@
 
     \subsection*{Temporal Difference Learning}
 
-    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It update new estimates partially on previous estimates without waiting for the final outcome, i.e., using bootstrapping. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td-learning} shows the general outline of how it works and what will differ between the presented algorithms is line 9, the update rule of $Q(S, A)$.
+    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It update new estimates partially on previous estimates without waiting for the final outcome, i.e., using bootstrapping. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td-learning} shows the general outline of how it works and what will differ between the algorithms is line 9, the update rule of $Q(S, A)$.
 
     \begin{algorithm}[H]
         \caption{TD Learning}
@@ -218,7 +218,7 @@
         \right]
     \end{align*}
 
-    It is a so called \textit{off-policy} method which is indicated by the $\max_a$ operation. That means it uses a greedy algorithm to estimate the return at the next step rather than following its current policy, therefore is off its own policy.
+    It is a so called \textit{off-policy} method which is indicated by the $\max$ operation. That means it uses a greedy algorithm to estimate the return at the next step rather than following its current policy, therefore is off its own policy.
 
     \subsubsection*{Sarsa}
 
@@ -233,7 +233,7 @@
         \right].
     \end{align*}
 
-    The difference betwen Sarsa and Q-learning is that it does not use the $\max$-operator and is rather using its current policy to estimate the next action-value. There is also a natural extension to Sarsa called \textit{Expected Sarsa} which takes the expected action-value estimate under the current policy. The update rule is defined as
+    The difference betwen Sarsa and Q-learning is that it does not use the $\max$ operator and is rather using its current policy to estimate the next action-value. There is also a natural extension to Sarsa called \textit{Expected Sarsa} which takes the expected action-value estimate under the current policy. The update rule is defined as
 
     \begin{align*}
         Q(S_t, A_t) &=

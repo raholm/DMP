@@ -3,27 +3,92 @@
 \begin{document}
     \section*{\centering Method}
 
-    In order the answer the research questions presented in the introduction, I have divided the experiments into two parts as presented below.
+    In order the answer the research questions presented in the introduction, we have divided the experiments into two parts. One experiment in which we look at the correlation between the reward function and the goal of the game and another where we investigate the performance of different state representations.
+
+    \subsection*{Reward Experiment}
+
+    Our hypothesis is that it is essential that the reward function reflect what the goal of the problem is and in our case that is to gather as many apples as possible, preferably in fewer time steps. To perform this experiment we have constructed 9 reward functions with all the combinations of the following characteristics
+
+    \begin{center}
+        \begin{tabular}{| l |}
+            \hline
+            \textbf{Reward at the end of the episode} \\ \hline
+            $\pm$ score or 0 \\ \hline
+            \textbf{Reward after each time step} \\ \hline
+            $\pm 1$ or 0 \\ \hline
+        \end{tabular}
+    \end{center}
+
+    The reasoning for the construction of these particular reward functions is the answer the research questions.
+
+    \textbf{Is it important for the reward function to reinforce behavior we want the agent to learn?} If this is true we expect the reward functions that gives positive score rewards regardless of reward per time step to have the best performances.
+
+    \textbf{Is punishing bad behavior equivalent to reinforcing good behavior?} If this is true we expect the reward function that gives 0 rewards at the end of the episode and -1 reward each time step has the similar performance to the ones hypothesised as the best in the previous question.
+
+    \textbf{Is it better if the reward function combines reinforcement and punishment?} If this is true we expect the reward function that gives positive score rewards at the end of the episode and -1 reward at each time step has the best performance.
+
+    %    The other family is characterized by
+    %
+    %    \begin{center}
+    %        \begin{tabular}{| l |}
+    %            \hline
+    %            \textbf{Reward at the end of the episode} \\ \hline
+    %            $+ 1000\ *$ length of snake \\
+    %            $- 100 * (\text{\# of time steps})^2$ \\
+    %            $- 10000\ *$ reason for death, either self-collision or with the game board \\ \hline
+    %            \textbf{Reward after each time step} \\ \hline
+    %            $-$ the manhattan distance from snake head to food source \\ \hline
+    %        \end{tabular}
+    %    \end{center}
+    %
+    %    and we choose to create 4 reward functions based on these characteristics. All have the reward based on the length of the snake and then either no punishment at the end of the episode or one of the different punishments.
+
+    In order to do this experiment we also need to choose state representations and we choose to use two different. The board state with all additional information and the directional distance state with all additional information, as described below, since they contains the most amount of information.
 
     \subsection*{State Experiment}
 
-    In order to determine the importance of the the state representation I have decided upon 4 different ones. Additional, I have also decided to test whether it is important for the state to contain the board dimensions in order for the agent to infer deadly state-action pairs. And also if the current game score is important for the agent to be able to predict the future rewards more accurate.
+    In order to determine the importance of the the state representation we have decided upon 4 different representations. Additional, we have also decided to test whether it is important for the state to contain the board dimensions to help the agent to infer deadly state-action pairs. And also if the current game score is important for the agent to be able to predict the future rewards more accurately.
 
-    Intuitively it would be reasonable to assume that if the agent knows the dimensions of the board it could more easily infer state-action pairs that are deadly and thus end the game with potentially less total reward.
+    Intuitively, it would be reasonable to assume that if the agent knows the dimensions of the board it could more easily infer state-action pairs that result in a terminal state and thus end the game with potentially less total reward.
 
-    By the same reasoning giving the agent access to its current score would improve the estimation of future rewards and thus lead to better actions.
+    By the same reasoning is it probably a good idea to give the agent access to its current score for it to improve the estimation of future rewards and thus making better decisions.
 
-    The 4 states are the following:
+    The 4 state representations are the following
 
     \begin{itemize}
         \item \textbf{Board}: Represents the complete board state.
-        \item \textbf{SnakeFood}: Represents coodinates of the Snake's body and the coodinate of the food source.
-        \item \textbf{Directional}: Represents the direction the Snake should travel to get to the food source without following the dynamics of the game. That means it might not be possible to change to that direction with a single action, e.g., the snake travels east but should travel west.
-        \item \textbf{DirectionalDistance}: Represent the same direction as above but also contains the manhattan distance from the head of the Snake to the food source.
+        \item \textbf{SnakeFood}: Represents coordinates of the snake's head/body and the coordinate of the food source.
+        \item \textbf{Directional}: Represents the direction the snake should travel to get to the food source without following the dynamics of the game. That means it might not be possible to change to that direction with a single action, e.g., the snake travels east but should travel west.
+        \item \textbf{DirectionalDistance}: Represent the same direction as above but also contains the manhattan distance from the head of the snake to the food source.
     \end{itemize}
 
-    and each state is split up into 4 different states to consider with/without board dimensions and with/without score, which gives 16 states in total.
+    and each state is split up into 4 different states considering with/without board dimensions and with/without score, which gives 16 states in total.
 
-    \subsection*{Reward}
+    To perform this experiment we also require a reward function which was decided based on the reward experiment by picking the best performing one.
+
+    \subsubsection*{Parameters}
+
+    For all the experiments we have used the following parameters based on trial-and-error experimentation
+
+    \begin{itemize}
+        \item $\epsilon$-Greedy Policy with exploration rate $\epsilon = 0.15$
+        \item Running 1 million episodes
+        \item Initialized the Q-function with 0s
+    \end{itemize}
+
+    and
+
+    \begin{center}
+        \begin{tabular}{| c | c |}
+            \hline
+            Learning rate $\alpha$ & Discount factor $\gamma$ \\ \hline
+            \multicolumn{2}{ |c| }{Q-Learning} \\ \hline
+            0.85 & 0.85 \\ \hline
+            \multicolumn{2}{ |c| }{Sarsa} \\ \hline
+            0.15 & 0.95 \\ \hline
+            \multicolumn{2}{ |c| }{Expected Sarsa} \\ \hline
+            0.15 & 0.95 \\ \hline
+        \end{tabular}
+    \end{center}
 
 \end{document}
