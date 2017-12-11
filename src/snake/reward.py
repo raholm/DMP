@@ -1,4 +1,9 @@
 from src.core.reward import Reward
+from src.util.math import manhattan
+
+REWARD_PER_BODY_PART = 1000
+REWARD_COLLISION = -10000
+REWARD_TIME_STEPS = -100
 
 
 class SnakeReward(Reward):
@@ -7,7 +12,7 @@ class SnakeReward(Reward):
 		return self._value
 
 
-class PositiveTravelPositiveFood(SnakeReward):
+class PosTravelPosScore(SnakeReward):
 	def __init__(self, env, state, action, new_state):
 		if env.episode_is_done():
 			self._value = env.score
@@ -15,7 +20,7 @@ class PositiveTravelPositiveFood(SnakeReward):
 			self._value = 1
 
 
-class NegativeTravelPositiveFood(SnakeReward):
+class NegTravelPosScore(SnakeReward):
 	def __init__(self, env, state, action, new_state):
 		if env.episode_is_done():
 			self._value = env.score
@@ -23,7 +28,7 @@ class NegativeTravelPositiveFood(SnakeReward):
 			self._value = -1
 
 
-class ZeroTravelPositiveFood(SnakeReward):
+class ZeroTravelPosScore(SnakeReward):
 	def __init__(self, env, state, action, new_state):
 		if env.episode_is_done():
 			self._value = env.score
@@ -31,7 +36,7 @@ class ZeroTravelPositiveFood(SnakeReward):
 			self._value = 0
 
 
-class PositiveTravelNegativeFood(SnakeReward):
+class PosTravelNegScore(SnakeReward):
 	def __init__(self, env, state, action, new_state):
 		if env.episode_is_done():
 			self._value = -env.score
@@ -39,7 +44,7 @@ class PositiveTravelNegativeFood(SnakeReward):
 			self._value = 1
 
 
-class NegativeTravelNegativeFood(SnakeReward):
+class NegTravelNegScore(SnakeReward):
 	def __init__(self, env, state, action, new_state):
 		if env.episode_is_done():
 			self._value = -env.score
@@ -47,7 +52,7 @@ class NegativeTravelNegativeFood(SnakeReward):
 			self._value = -1
 
 
-class ZeroTravelNegativeFood(SnakeReward):
+class ZeroTravelNegScore(SnakeReward):
 	def __init__(self, env, state, action, new_state):
 		if env.episode_is_done():
 			self._value = -env.score
@@ -55,7 +60,7 @@ class ZeroTravelNegativeFood(SnakeReward):
 			self._value = 0
 
 
-class PositiveTravelZeroFood(SnakeReward):
+class PosTravelZeroScore(SnakeReward):
 	def __init__(self, env, state, action, new_state):
 		if env.episode_is_done():
 			self._value = 0
@@ -63,7 +68,7 @@ class PositiveTravelZeroFood(SnakeReward):
 			self._value = 1
 
 
-class NegativeTravelZeroFood(SnakeReward):
+class NegTravelZeroScore(SnakeReward):
 	def __init__(self, env, state, action, new_state):
 		if env.episode_is_done():
 			self._value = 0
@@ -71,9 +76,43 @@ class NegativeTravelZeroFood(SnakeReward):
 			self._value = -1
 
 
-class ZeroTravelZeroFood(SnakeReward):
+class ZeroTravelZeroScore(SnakeReward):
 	def __init__(self, env, state, action, new_state):
 		if env.episode_is_done():
 			self._value = 0
 		else:
 			self._value = 0
+
+
+class NegDistancePosBodySize(SnakeReward):
+	def __init__(self, env, state, action, new_state):
+		if env.episode_is_done():
+			self._value = REWARD_PER_BODY_PART * len(env.snake.body)
+		else:
+			self._value = -manhattan(env.snake.head, env.food)
+
+
+class NegDistanceNegTimeStepPosBodySize(SnakeReward):
+	def __init__(self, env, state, action, new_state):
+		if env.episode_is_done():
+			self._value = REWARD_PER_BODY_PART * len(env.snake.body) - REWARD_TIME_STEPS * pow(env.time_step, 2)
+		else:
+			self._value = -manhattan(env.snake.head, env.food)
+
+
+class NegDistanceNegSelfCollisionPosBodySize(SnakeReward):
+	def __init__(self, env, state, action, new_state):
+		if env.episode_is_done():
+			self._value = REWARD_PER_BODY_PART * len(
+				env.snake.body) + REWARD_COLLISION * env.death_from_self_collision
+		else:
+			self._value = -manhattan(env.snake.head, env.food)
+
+
+class NegDistanceNegBorderCollisionPosBodySize(SnakeReward):
+	def __init__(self, env, state, action, new_state):
+		if env.episode_is_done():
+			self._value = REWARD_PER_BODY_PART * len(env.snake.body) + REWARD_COLLISION * (
+				not env.death_from_self_collision)
+		else:
+			self._value = -manhattan(env.snake.head, env.food)

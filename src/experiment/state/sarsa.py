@@ -1,6 +1,6 @@
 from src.algorithms.sarsa import Sarsa
 from src.core.policy import EpsilonGreedyPolicy
-from src.experiment.parameters import ExperimentParameters
+from src.experiment.params import ExperimentParameters
 from src.experiment.state.analysis import analyze_models
 from src.experiment.state.train import train_models
 from src.snake.environment import SnakeEnvironment

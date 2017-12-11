@@ -1,7 +1,7 @@
 from src.core.discount_factor import StaticDiscountFactor
 from src.core.learning_rate import StaticLearningRate
 from src.core.value_function import DictActionValueFunction
-from src.snake.reward import NegativeTravelPositiveFood
+from src.snake.reward import NegTravelPosScore
 from src.snake.snake import SnakeDirection
 from src.snake.state import SnakeFoodScoreState
 
@@ -24,7 +24,7 @@ class SnakeParameters(object):
 
 		# Learning Related
 		self.state = SnakeFoodScoreState
-		self.reward = NegativeTravelPositiveFood
+		self.reward = NegTravelPosScore
 		self.discount_factor = StaticDiscountFactor(0.85)
 		self.learning_rate = StaticLearningRate(0.15)
 		self.epsilon = 0.15

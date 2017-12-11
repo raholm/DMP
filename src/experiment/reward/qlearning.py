@@ -1,11 +1,11 @@
 from src.algorithms.qlearning import QLearning
 from src.core.policy import EpsilonGreedyPolicy
-from src.experiment.parameters import ExperimentParameters
+from src.experiment.params import ExperimentParameters
 from src.experiment.reward.analysis import analyze_models
+from src.experiment.reward.params import get_reward_states
 from src.experiment.reward.train import train_models
 from src.snake.environment import SnakeEnvironment
 from src.snake.parameters import SnakeParameters
-from src.snake.state import BoardScoreState, SnakeFoodScoreState, DirectionalDistanceScoreState, DirectionalScoreState
 
 
 def train():
@@ -21,10 +21,7 @@ def train():
 	output_dir = "../../../models/qlearning/reward/%i" % exp_params.seed
 	exp_params.model_output_dir = output_dir
 
-	states = [BoardScoreState, SnakeFoodScoreState,
-			  DirectionalScoreState, DirectionalDistanceScoreState]
-
-	for state in states:
+	for state in get_reward_states():
 		exp_params.model_params.state = state
 		train_models(exp_params)
 

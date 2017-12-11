@@ -1,5 +1,6 @@
 from src.algorithms.sarsa import ExpectedSarsa
 from src.core.policy import EpsilonGreedyPolicy
+from src.experiment.parameters.analysis import analyze_models
 from src.experiment.parameters.params import get_snake_parameters
 from src.experiment.train import train_and_store_model
 from src.snake.environment import SnakeEnvironment
@@ -23,8 +24,22 @@ def train():
 		train_and_store_model(exp_params)
 
 
+def analyze():
+	exp_params = ExperimentParameters()
+	exp_params.seed = 666
+
+	model_output_dir = "../../../models/expected_sarsa/params/%i" % exp_params.seed
+	exp_params.model_output_dir = model_output_dir
+
+	image_output_dir = "../../../images/expected_sarsa/params/%i" % exp_params.seed
+	exp_params.image_output_dir = image_output_dir
+
+	analyze_models(exp_params)
+
+
 def main():
 	train()
+	analyze()
 
 
 if __name__ == '__main__':

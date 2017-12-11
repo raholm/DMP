@@ -13,6 +13,7 @@ class SnakeEnvironment(Environment):
 		self.snake = None
 		self.food = None
 		self.food_count = None
+		self.time_step = None
 		self.episode_running = True
 		self.death_from_self_collision = None
 
@@ -22,6 +23,7 @@ class SnakeEnvironment(Environment):
 		self.snake = self.__create_snake()
 		self.food = self.__create_food()
 		self.food_count = 0
+		self.time_step = 0
 		self.episode_running = True
 		self.death_from_self_collision = False
 
@@ -36,6 +38,8 @@ class SnakeEnvironment(Environment):
 		return [SnakeAction.South, SnakeAction.North, SnakeAction.West, SnakeAction.East]
 
 	def step(self, action):
+		self.time_step += 1
+
 		old_state = self.params.state(self)
 
 		self.snake.update(action)
