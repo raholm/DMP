@@ -2,7 +2,7 @@ from src.algorithms.qlearning import QLearning
 from src.core.policy import EpsilonGreedyPolicy
 from src.experiment.params import ExperimentParameters
 from src.experiment.reward.analysis import analyze_models
-from src.experiment.reward.params import get_reward_states
+from src.experiment.reward.params import get_reward_states, get_reward_seeds
 from src.experiment.reward.train import train_models
 from src.snake.environment import SnakeEnvironment
 from src.snake.parameters import SnakeParameters
@@ -18,12 +18,15 @@ def train():
 	exp_params.model_class = QLearning
 	exp_params.model_params = params
 
-	output_dir = "../../../models/qlearning/reward/%i" % exp_params.seed
-	exp_params.model_output_dir = output_dir
+	for seed in get_reward_seeds():
+		exp_params.seed = seed
 
-	for state in get_reward_states():
-		exp_params.model_params.state = state
-		train_models(exp_params)
+		output_dir = "../../../models/qlearning/reward/%i" % exp_params.seed
+		exp_params.model_output_dir = output_dir
+
+		for state in get_reward_states():
+			exp_params.model_params.state = state
+			train_models(exp_params)
 
 
 def analyze():
@@ -39,5 +42,5 @@ def analyze():
 
 
 if __name__ == "__main__":
-	# train()
-	analyze()
+	train()
+	# analyze()

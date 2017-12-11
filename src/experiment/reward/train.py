@@ -17,7 +17,7 @@ def train_reward_models(params):
 			   NegDistanceNegSelfCollisionPosBodySize,
 			   NegDistanceNegBorderCollisionPosBodySize]
 
-	for reward in rewards:
+	for reward in rewards[:-4]:
 		params.model_params.reward = reward
 		train_and_store_model(params)
 

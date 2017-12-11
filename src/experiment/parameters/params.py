@@ -5,6 +5,10 @@ from src.snake.reward import NegTravelPosScore
 from src.snake.state import SnakeFoodScoreState
 
 
+def get_parameters_seed():
+	return 234
+
+
 def get_snake_parameters():
 	params = SnakeParameters()
 	params.state = SnakeFoodScoreState

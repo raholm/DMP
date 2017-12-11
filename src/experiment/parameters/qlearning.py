@@ -1,7 +1,7 @@
 from src.algorithms.qlearning import QLearning
 from src.core.policy import EpsilonGreedyPolicy
 from src.experiment.parameters.analysis import analyze_models
-from src.experiment.parameters.params import get_snake_parameters
+from src.experiment.parameters.params import get_snake_parameters, get_parameters_seed
 from src.experiment.train import train_and_store_model
 from src.snake.environment import SnakeEnvironment
 from src.experiment.params import ExperimentParameters
@@ -16,7 +16,7 @@ def train():
 		exp_params.env = env
 		exp_params.model_class = QLearning
 		exp_params.model_params = params
-		exp_params.seed = 666
+		exp_params.seed = get_parameters_seed()
 
 		output_dir = "../../../models/qlearning/params/%i" % exp_params.seed
 		exp_params.model_output_dir = output_dir
@@ -26,7 +26,7 @@ def train():
 
 def analyze():
 	exp_params = ExperimentParameters()
-	exp_params.seed = 666
+	exp_params.seed = get_parameters_seed()
 
 	model_output_dir = "../../../models/qlearning/params/%i" % exp_params.seed
 	exp_params.model_output_dir = model_output_dir
