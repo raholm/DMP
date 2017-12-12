@@ -2,7 +2,7 @@ from src.snake.state import BoardDimensionScoreState, DirectionalDistanceDimensi
 
 
 def get_reward_seeds():
-	return [234, 345]
+	return [234, 345, 456]
 
 
 def get_reward_states():
