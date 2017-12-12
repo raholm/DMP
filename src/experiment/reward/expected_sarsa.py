@@ -3,7 +3,8 @@ from src.core.discount_factor import StaticDiscountFactor
 from src.core.learning_rate import StaticLearningRate
 from src.core.policy import EpsilonGreedyPolicy
 from src.experiment.params import ExperimentParameters
-from src.experiment.reward.analysis import analyze_models, get_aggregated_models, analyze_aggregated_models
+from src.experiment.reward.analysis import analyze_models, get_aggregated_models, analyze_aggregated_models, \
+	analyze_aggregated_reward_food_count_correlations
 from src.experiment.reward.params import get_reward_states, get_reward_seeds
 from src.experiment.reward.train import train_models
 from src.snake.environment import SnakeEnvironment
@@ -53,7 +54,7 @@ def analyze_aggregated():
 	image_output_dir = "../../../images/expected_sarsa/reward/%i" % exp_params.seed
 	exp_params.image_output_dir = image_output_dir
 
-	aggregated_models = get_aggregated_models("expected_sarsa", "reward", ExperimentParameters(), get_reward_seeds())
+	aggregated_models = get_aggregated_models("expected_sarsa", "reward", exp_params, get_reward_seeds())
 
 	filenames = list(aggregated_models.keys())
 	models = list(aggregated_models.values())
@@ -65,3 +66,4 @@ if __name__ == "__main__":
 	# train()
 	# analyze()
 	analyze_aggregated()
+	# analyze_aggregated_reward_food_count_correlations("expected_sarsa")

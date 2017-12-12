@@ -86,7 +86,7 @@ def plot_multi_average_food_count_over_time(x, food_count_per_episode, labels):
 
 	plt.title("Average Food Count Over Time")
 	plt.xlabel("# of episodes")
-	plt.ylabel("Food")
+	plt.ylabel("Food Count")
 	plt.legend()
 
 

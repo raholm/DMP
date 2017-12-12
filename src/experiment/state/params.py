@@ -1,2 +1,9 @@
+from src.snake.reward import ZeroTravelPosScore
+
+
 def get_state_seeds():
-	return [234, 345]
+	return [234, 345, 456]
+
+
+def get_state_reward():
+	return ZeroTravelPosScore
