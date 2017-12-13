@@ -2,8 +2,9 @@ from src.algorithms.sarsa import ExpectedSarsa
 from src.core.discount_factor import StaticDiscountFactor
 from src.core.learning_rate import StaticLearningRate
 from src.core.policy import EpsilonGreedyPolicy
+from src.experiment.analysis import get_aggregated_models
 from src.experiment.params import ExperimentParameters
-from src.experiment.state.analysis import analyze_models
+from src.experiment.state.analysis import analyze_models, analyze_aggregated_models
 from src.experiment.state.params import get_state_seeds, get_state_reward
 from src.experiment.state.train import train_models
 from src.snake.environment import SnakeEnvironment
@@ -45,6 +46,22 @@ def analyze():
 	analyze_models(exp_params)
 
 
+def analyze_aggregated():
+	exp_params = ExperimentParameters()
+	exp_params.seed = get_state_seeds()[0]
+
+	image_output_dir = "../../../images/expected_sarsa/state/%i" % exp_params.seed
+	exp_params.image_output_dir = image_output_dir
+
+	aggregated_models = get_aggregated_models("expected_sarsa", "state", exp_params, get_state_seeds())
+
+	filenames = list(aggregated_models.keys())
+	models = list(aggregated_models.values())
+
+	analyze_aggregated_models(filenames, models, exp_params)
+
+
 if __name__ == "__main__":
-	train()
-# analyze()
+	# train()
+	# analyze()
+	analyze_aggregated()

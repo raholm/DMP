@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import numpy as np
+from cycler import cycler
 
 from src.util.math import compute_mean_over_time
 
@@ -61,7 +63,7 @@ def plot_multi_average_reward_over_time(x, rewards_per_episode, labels):
 	plt.title("Average Reward Over Time")
 	plt.xlabel("# of episodes")
 	plt.ylabel("Reward")
-	plt.legend()
+	plt.legend(fontsize='x-small')
 
 
 def plot_multi_average_actions_over_time(x, actions_per_episode, labels):
@@ -74,7 +76,7 @@ def plot_multi_average_actions_over_time(x, actions_per_episode, labels):
 	plt.title("Average # of Actions Over Time")
 	plt.xlabel("# of episodes")
 	plt.ylabel("# of actions")
-	plt.legend()
+	plt.legend(fontsize='x-small')
 
 
 def plot_multi_average_food_count_over_time(x, food_count_per_episode, labels):
@@ -87,7 +89,7 @@ def plot_multi_average_food_count_over_time(x, food_count_per_episode, labels):
 	plt.title("Average Food Count Over Time")
 	plt.xlabel("# of episodes")
 	plt.ylabel("Food Count")
-	plt.legend()
+	plt.legend(fontsize='x-small')
 
 
 def plot_multi_average_self_collision_death_over_time(x, self_collision_death_per_episode, labels):
@@ -100,4 +102,4 @@ def plot_multi_average_self_collision_death_over_time(x, self_collision_death_pe
 	plt.title("Average Self-Collision Death Over Time")
 	plt.xlabel("# of episodes")
 	plt.ylabel("Self-Collision Death")
-	plt.legend()
+	plt.legend(fontsize='x-small')

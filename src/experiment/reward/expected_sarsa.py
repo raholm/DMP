@@ -3,8 +3,9 @@ from src.core.discount_factor import StaticDiscountFactor
 from src.core.learning_rate import StaticLearningRate
 from src.core.policy import EpsilonGreedyPolicy
 from src.experiment.params import ExperimentParameters
-from src.experiment.reward.analysis import analyze_models, get_aggregated_models, analyze_aggregated_models, \
+from src.experiment.reward.analysis import analyze_models, analyze_aggregated_models, \
 	analyze_aggregated_reward_food_count_correlations
+from src.experiment.analysis import get_aggregated_models
 from src.experiment.reward.params import get_reward_states, get_reward_seeds
 from src.experiment.reward.train import train_models
 from src.snake.environment import SnakeEnvironment
