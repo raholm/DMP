@@ -13,8 +13,8 @@
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.6\textwidth]{./images/agent_env}
-        \label{fig:agent_env}
         \caption{The agent-environment interaction loop.}
+        \label{fig:agent_env}
     \end{figure}
 
     This rather simple framework is actually abstract and flexible enough to be applied in many problems in many different ways. The actions could range from low level controls such as turning the wheels on the car to driving from point A to point B. Similarly, the state could represent current road surface condition to traffic flow in the nearby area. The reward will however always be a single numerical value since we require it to be comparable to be able to determine the best action, the action that will maximize the total amount of reward the agent receives. We will come back to what that means in the following section.
@@ -131,11 +131,9 @@
 
     An important concept in reinforcement learning is the \textit{exploration-exploitation} trade-off. It refers to the problem that the agent does not know how it should behave to maximize the expected return and thus have to interact with the environment to learn by trial-and-error. This means that it has to explore the environment by interactions and observe their consequences and the reward signals. This information does not contain what the \enquote{right} action was supposed to be but the agent can still construct a policy from it. Exploiting means that the agent is using its current policy to determine the best action, i.e., is greedy with respect to the policy. It can happen that the current policy is stuck in a local optima because the agent has not explored the search space thorough enough to build a good estimate of the performance of other actions.
 
-    A simple technique to enforcing exploration is by training using $\epsilon$-greedy policy, see algorithm \ref{alg:epsilon-greedy-policy}, that take the greedy action with probability $1 - \epsilon$ and a uniformly random action with probability $\epsilon$. This is the approach taken in this report but there are more sophisticated techniques to balance these two acts.
+    A simple technique to enforcing exploration is by training using $\epsilon$-greedy policy, see algorithm \ref{alg:epsilon_greedy_policy}, that take the greedy action with probability $1 - \epsilon$ and a uniformly random action with probability $\epsilon$. This is the approach taken in this report but there are more sophisticated techniques to balance these two acts.
 
     \begin{algorithm}[H]
-        \caption{$\epsilon$-Greedy Policy}
-        \label{alg:epsilon-greedy-policy}
         \begin{algorithmic}[1]
             \Require{State $s$, Action-value function $q$,
             Exploration rate $\epsilon \in [0, 1]$}
@@ -152,6 +150,8 @@
             \Return{$a$}
             \EndFunction
         \end{algorithmic}
+        \caption{$\epsilon$-Greedy Policy}
+        \label{alg:epsilon_greedy_policy}
     \end{algorithm}
 
     \subsection*{Snake}
@@ -163,8 +163,8 @@
         \includegraphics[width=.3\textwidth]{./images/snake1}\hfill
         \includegraphics[width=.3\textwidth]{./images/snake2}\hfill
         \includegraphics[width=.3\textwidth]{./images/snake3}
-        \label{fig:snake}
         \caption{5x5 board of Snake where the snake consists of the orange (head) and green parts (body) and the red part is the apple.}
+        \label{fig:snake}
     \end{figure}
 
     A term that was mentioned previously was \textit{episodic task} which refers to problems that have a natural notion of final time step which Snake does, that is when the snake collides with something. We denote this state as the \textit{terminal state} which will follow with a reset of the game in the same starting state independently of how it ended.
@@ -178,8 +178,6 @@
     \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It update new estimates partially on previous estimates, by bootstrapping, without waiting for the final outcome. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td-learning} shows the general outline of how it works and what will differ between the algorithms is line 9, the update rule of $Q(S, A)$.
 
     \begin{algorithm}[H]
-        \caption{TD Learning}
-        \label{alg:td-learning}
         \begin{algorithmic}[1]
             \Require{Learning rate $\alpha \in [0, 1]$, Discount factor $\gamma \in [0, 1]$}
             \Statex
@@ -202,6 +200,8 @@
             \Return{Q}
             \EndFunction
         \end{algorithmic}
+        \caption{TD Learning Algorithm.}
+        \label{alg:td-learning}
     \end{algorithm}
 
     \subsubsection*{Q-Learning}
