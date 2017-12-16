@@ -175,7 +175,7 @@
 
     \subsection*{Temporal Difference Learning}
 
-    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It update new estimates partially on previous estimates, by bootstrapping, without waiting for the final outcome. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td-learning} shows the general outline of how it works and what will differ between the algorithms is line 9, the update rule of $Q(S, A)$.
+    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It update new estimates partially on previous estimates, by bootstrapping, without waiting for the final outcome. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td_learning} shows the general outline of how it works and what will differ between the algorithms is line 9, the update rule of $Q(S, A)$. We have used a tabular representation of the Q-function, i.e., we map a state-action pair to an action-value using a hash table.
 
     \begin{algorithm}[H]
         \begin{algorithmic}[1]
@@ -201,7 +201,7 @@
             \EndFunction
         \end{algorithmic}
         \caption{TD Learning Algorithm.}
-        \label{alg:td-learning}
+        \label{alg:td_learning}
     \end{algorithm}
 
     \subsubsection*{Q-Learning}
