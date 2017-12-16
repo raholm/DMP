@@ -2,6 +2,29 @@
 
 \begin{document}
 
-\section*{\centering Discussion}
+    \section*{\centering Discussion}
+
+    In this part we discuss the results that we have gotten from our two experiments and point out what we have learned. We discuss them in the order they presented previously.
+
+    \subsection*{Reward Results}
+
+    The first thing we noticed from the reward experiment is that Q-learning and the two Sarsa algorithms behave rather differently. Q-learning does not seem to be as susceptible to, what we would consider, bad reward functions that do not reflect the goal such as the \textit{ZeroTravelZeroScore}-state. For the Sarsa variants these types of states seem to be hopeless for learning as was our hypothesis. Since Q-learning uses the max operator it is known to be overestimating the value function which might be one reason for not perform as badly. Methods for negating this problem have been developed such as double Q-learning by van Hasselt \cite{hasselt2010double}.
+
+    However, since the average food count is around 1 this means that the agent only eats a single apple which may not necessarily indicate that it has learnt anything and is just randomly moving around and gets lucky. By actually watching the agent play the game we have seen that it actually learns to navigate to the first food source but then commits suicide by colliding with the game border. On rare occasions when the next food gets located nearby it eats two of them before colliding with the game border.
+
+    The results suggest that it is actually important that the reward function to reinforce behavior we want the agent to learn. This is suggested by the fact that all the states that give a positive score reward at the end of each episode have better performance than the other states in almost all cases. This is further supported by the fact that the reward function and the actual food counts are highly correlated as shown in table \ref{tab:reward_food_coor} which indicate that is it important that the reward function reflect the goal that we want the agent to achieve. So the answer to our question \textbf{Is it important for the reward function to reinforce behavior we
+    want the agent to learn?} is yes.
+
+    We asked the question \textbf{Is punishing bad behavior equivalent to reinforcing good behavior?} and the results suggests that this is not necessarily true. For that to be true we expected that the reward function \textit{NegTravelZeroScore} to have similar performance to those rewards that give positive score reward at the end of an episode. This is not the case at all for this problem and by observing the agent's behavior given the former reward function we saw that it travels to the nearest border and commits suicide. One could argue that this reward function do not reflect truly bad behavior, but we defined bad behavior as randomly strolling around aimlessly as bad.
+
+    This brings us to our last question \textbf{Is it better if the reward function combines reinforcement and punishment?} and what we can observe is that \textit{NegTravelPosScore} and \textit{ZeroTravelPosScore} have very similar performance with the latter slighly better. This suggests that it is not necessary to combine reinforcement with punishment for best performance. Once again, one can argue that our definition of bad behavior is superficial and that this result may not hold when there is a clear definition of what bad behavior is. What is obvious is that good behavior has to be reflected in the reward function, but inconclusive whether combining reinforcement and punishment give rise to best performance or not.
+
+    \subsection*{State Results}
+
+    From the plots of all states we can clearly see a clustering and these clusters represent states with and without the score information. Those states that do contain score information have considerable better performance in terms of the average number of eaten apples. Looking closer at those states we can see that including board dimensions do not actually make much of a difference. This indicates that adding uninformative, in the sense that it is constant, information neither improve nor degrade performance. Overall it seems that the Sarsa methods have similar performance and that they are better than Q-learning.
+
+    As with the reward functions we can see that Q-learning and Sarsa methods do differ. The best performing states for Q-learning are \textit{BoardScoreState} and \textit{SnakeFoodScoreState} which basically stores the same information in different formats. \textit{DirectionalDistanceScoreState} scores the best for the two Sarsa methods and this have probably to do with the fact that Sarsa is on-policy and Q-learning is off-policy. This state representation contain information about the next action that should be considered and thus an on-policy algorithm should be able to take advantage that information more so than an off-policy algorithm.
+
+    We can say, from the results, that the state representation is also very important for learning and the most beneficial representation depends on the characteristics of the learning algorithm. It seems that these methods are stable enough to not be disturbed by constant information such as the board dimensions and that such information can be considered essentially useless.
 
 \end{document}

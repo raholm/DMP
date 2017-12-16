@@ -27,27 +27,11 @@
 
     \textbf{Is it better if the reward function combines reinforcement and punishment?} If this is true we expect the reward function that gives positive score rewards at the end of the episode and -1 reward at each time step has the best performance.
 
-    %    The other family is characterized by
-    %
-    %    \begin{center}
-    %        \begin{tabular}{| l |}
-    %            \hline
-    %            \textbf{Reward at the end of the episode} \\ \hline
-    %            $+ 1000\ *$ length of snake \\
-    %            $- 100 * (\text{\# of time steps})^2$ \\
-    %            $- 10000\ *$ reason for death, either self-collision or with the game board \\ \hline
-    %            \textbf{Reward after each time step} \\ \hline
-    %            $-$ the manhattan distance from snake head to food source \\ \hline
-    %        \end{tabular}
-    %    \end{center}
-    %
-    %    and we choose to create 4 reward functions based on these characteristics. All have the reward based on the length of the snake and then either no punishment at the end of the episode or one of the different punishments.
-
     In order to do this experiment we also need to choose state representations and we choose to use two different. The board state with all additional information and the directional distance state with all additional information, as described below, since they contains the most amount of information.
 
     \subsection*{State Experiment}
 
-    In order to determine the importance of the the state representation we have decided upon 4 different representations. Additional, we have also decided to test whether it is important for the state to contain the board dimensions to help the agent to infer deadly state-action pairs. And also if the current game score is important for the agent to be able to predict the future rewards more accurately.
+    In order to determine the importance of the the state representation we have decided upon 4 different representations. Additional, we have decided to test whether it is important for the state to contain the board dimensions to help the agent to infer deadly state-action pairs. And also if the current game score is important for the agent to be able to predict the future rewards more accurately.
 
     Intuitively, it would be reasonable to assume that if the agent knows the dimensions of the board it could more easily infer state-action pairs that result in a terminal state and thus end the game with potentially less total reward.
 
@@ -56,7 +40,7 @@
     The 4 state representations are the following
 
     \begin{itemize}
-        \item \textbf{Board}: Represents the complete board state.
+        \item \textbf{Board}: Represents the complete board state as the game is designed.
         \item \textbf{SnakeFood}: Represents coordinates of the snake's head/body and the coordinate of the food source.
         \item \textbf{Directional}: Represents the direction the snake should travel to get to the food source without following the dynamics of the game. That means it might not be possible to change to that direction with a single action, e.g., the snake travels east but should travel west.
         \item \textbf{DirectionalDistance}: Represent the same direction as above but also contains the manhattan distance from the head of the snake to the food source.
@@ -64,15 +48,15 @@
 
     and each state is split up into 4 different states considering with/without board dimensions and with/without score, which gives 16 states in total.
 
-    To perform this experiment we also require a reward function which was decided based on the reward experiment by picking the best performing one.
+    To perform this experiment we also require a reward function which was decided based on the reward experiment by picking the best performing one. It turned out to be the reward function that gave 0 reward each time step and positive score as reward at the end of the episode.
 
-    \subsubsection*{Parameters}
+    \subsubsection*{Hyperparameters}
 
-    For all the experiments we have used the following parameters based on trial-and-error experimentation
+    For all the experiments we have used the following hyperparameters based on trial-and-error experimentation
 
     \begin{itemize}
         \item $\epsilon$-greedy policy with exploration rate $\epsilon = 0.15$
-        \item Running 1 million episodes
+        \item Training for 1 million episodes
         \item Initialized the Q-function with 0s
     \end{itemize}
 
