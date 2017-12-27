@@ -1,10 +1,10 @@
 from src.algorithms.sarsa import Sarsa
 from src.core.discount_factor import StaticDiscountFactor
 from src.core.learning_rate import StaticLearningRate
-from src.core.policy import EpsilonGreedyPolicy
+from src.core.policy import EpsilonGreedyPolicy, GreedyPolicy
 from src.experiment.params import ExperimentParameters
 from src.experiment.reward.analysis import analyze_models, analyze_aggregated_models, \
-	analyze_aggregated_reward_food_count_correlations
+	analyze_aggregated_reward_food_count_correlations, analyze_models_test
 from src.experiment.analysis import get_aggregated_models
 from src.experiment.reward.params import get_reward_states, get_reward_seeds
 from src.experiment.reward.train import train_models
@@ -48,6 +48,28 @@ def analyze():
 	analyze_models(exp_params)
 
 
+def analyze_test():
+	params = SnakeParameters()
+	params.discount_factor = StaticDiscountFactor(0.95)
+	params.learning_rate = StaticLearningRate(0.15)
+
+	env = SnakeEnvironment(params)
+	params.policy = GreedyPolicy(env)
+
+	exp_params = ExperimentParameters()
+	exp_params.env = env
+	exp_params.model_class = Sarsa
+	exp_params.model_params = params
+
+	model_output_dir = "../../../models/sarsa/reward/%i" % exp_params.seed
+	exp_params.model_output_dir = model_output_dir
+
+	image_output_dir = "../../../images/sarsa/reward/%i" % exp_params.seed
+	exp_params.image_output_dir = image_output_dir
+
+	analyze_models_test(exp_params)
+
+
 def analyze_aggregated():
 	exp_params = ExperimentParameters()
 	exp_params.seed = get_reward_seeds()[0]
@@ -67,4 +89,4 @@ if __name__ == "__main__":
 	# train()
 	# analyze()
 	analyze_aggregated()
-	# analyze_aggregated_reward_food_count_correlations("sarsa")
+# analyze_aggregated_reward_food_count_correlations("sarsa")

@@ -53,6 +53,27 @@ def analyze_models(params):
 
 # analyze_directional_distance_state_models(models, states, rewards, params)
 
+def analyze_models_test(params):
+	models, filenames = read_models(params)
+
+	states = []
+	rewards = []
+
+	for filename in filenames:
+		states.append(filename.split("_")[0])
+		rewards.append(filename.split("_")[1])
+
+
+	data = []
+
+	for model, state, reward in zip(models, states, rewards):
+		rewards = model.run(params.env, 1000)
+		mean_reward = np.mean(rewards)
+		sd_reward = np.std(rewards)
+
+		data.append((state, reward, mean_reward, sd_reward))
+
+
 
 def analyze_aggregated_models(filenames, models, params):
 	order = list(np.argsort(filenames))
