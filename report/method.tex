@@ -7,7 +7,7 @@
 
     \subsection*{Reward Experiment}
 
-    Our hypothesis is that it is essential that the reward function reflect what the goal of the problem is and in our case that is to gather as many apples as possible, preferably in fewer time steps. To perform this experiment we have constructed 9 reward functions with all the combinations of the following characteristics
+    Our hypothesis is that it is essential that the reward function reflects what the goal of the problem is and in our case that is to gather as many apples as possible, preferably in fewer time steps. To perform this experiment we have constructed 9 reward functions with all the combinations of the following characteristics
 
     \begin{center}
         \begin{tabular}{| l |}
@@ -31,7 +31,7 @@
 
     \subsection*{State Experiment}
 
-    In order to determine the importance of the the state representation we have decided upon 4 different representations. Additional, we have decided to test whether it is important for the state to contain the board dimensions to help the agent to infer deadly state-action pairs. And also if the current game score is important for the agent to be able to predict the future rewards more accurately.
+    In order to determine the importance of the the state representation we have decided upon 4 different representations. Additionally, we have decided to test whether it is important for the state to contain the board dimensions to help the agent to infer deadly state-action pairs. And also if the current game score is important for the agent to be able to predict the future rewards more accurately.
 
     Intuitively, it would be reasonable to assume that if the agent knows the dimensions of the board it could more easily infer state-action pairs that result in a terminal state and thus end the game with potentially less total reward.
 
@@ -43,7 +43,7 @@
         \item \textbf{Board}: Represents the complete board state as the game is designed.
         \item \textbf{SnakeFood}: Represents coordinates of the snake's head/body and the coordinate of the food source.
         \item \textbf{Directional}: Represents the direction the snake should travel to get to the food source without following the dynamics of the game. That means it might not be possible to change to that direction with a single action, e.g., the snake travels east but should travel west.
-        \item \textbf{DirectionalDistance}: Represent the same direction as above but also contains the manhattan distance from the head of the snake to the food source.
+        \item \textbf{DirectionalDistance}: Represent the same direction as above but also contains the Manhattan distance from the head of the snake to the food source.
     \end{itemize}
 
     and each state is split up into 4 different states considering with/without board dimensions and with/without score, which gives 16 states in total.

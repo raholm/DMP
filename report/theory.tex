@@ -8,7 +8,7 @@
 
     \subsection*{Framework}
 
-    To begin the definition of the reinforcement learning problem we first need to define a few fundamental terms that are required in the following formalization. The basic idea is to learn from interactions in order to achieve a goal. The learner is called the \textit{agent} which interacts with the \textit{environment} by performing \textit{actions} in a sequential manner. The agent is continuously interacting with the environment and it responds based on those interactions that arise in the form of a representation of the \textit{state} of the environment. Not only may the environment change its state, it also give rise to \textit{rewards}, numerical values that the agent is trying to maximize. Figure \ref{fig:agent_env} shows the interactions between the agent and the environment. A complete specification of an environment and how its rewards are determined defines a \textit{task}, which is an instance of a reinforcement learning problem.
+    To begin the definition of the reinforcement learning problem we first need to define a few fundamental terms that are required in the following formalization. The basic idea is to learn from interactions in order to achieve a goal. The learner is called the \textit{agent} which interacts with the \textit{environment} by performing \textit{actions} in a sequential manner. The agent is continuously interacting with the environment and it responds based on those interactions that arise in the form of a representation of the \textit{state} of the environment. Not only may the environment change its state in reponse to the agent's actions, it also give rise to \textit{rewards}, numerical values that the agent is trying to maximize through its actions. Figure \ref{fig:agent_env} shows the interactions between the agent and the environment. A complete specification of an environment and how its rewards are determined defines a \textit{task}, which is an instance of a reinforcement learning problem.
 
     \begin{figure}[H]
         \centering
@@ -37,7 +37,7 @@
 
     \subsubsection*{Dynamics}
 
-    We will now formalize the reinforcement learning problem through the \textit{Markov Decision Process} (MDP), in particular the \textit{finite} MDP, by sticking to the limitations mentioned above. This formalization assumes that the problem satisfies the \textit{Markov property} which means that the one-step dynamics of the problem hold the following
+    We will now formalize the reinforcement learning problem through the \textit{Markov Decision Process} (MDP), in particular the \textit{finite} MDP, by sticking to the limitations mentioned above. This formalization assumes that the problem satisfies the \textit{Markov property} which means that the one-step dynamics of the problem satisfies the following
 
     \begin{align*}
         Pr(S_{t + 1} = \nextstate, R_{t + 1} = r | S_0, A_0, R_1, \ldots, S_{t - 1}, A_{t - 1}, R_t, S_t, A_t) = Pr(S_{t + 1} = \nextstate, R_{t + 1} = r | S_t, A_t),
@@ -74,7 +74,7 @@
 
     The \textit{reward signal} is an essential part to learning that will guide the agent to the target behavior. This implies that it is crucial that during the construction of your reinforcement learning problem the underlying reward function that generates the rewards should reflect what you want accomplished. As a simple example, in the game of chess you would consider winning as good and losing as bad and so the reward should reflect that by for instance give +1 reward for winning and -1 reward for losing.
 
-    The sole goal of the agent is the maximize the total reward it receives of the long run so we define the return $G_t$ as
+    The sole goal of the agent is the maximize the total reward it receives in the long run, so we define the return $G_t$ as
 
     \begin{align*}
         G_t = R_{t + 1} + \gamma R_{t + 2} + \ldots = \sum_{k = 0}^{\infty} \gamma^k R_{t + k + 1},
@@ -129,9 +129,9 @@
 
     \subsubsection*{Exploration versus Exploitation}
 
-    An important concept in reinforcement learning is the \textit{exploration-exploitation} trade-off. It refers to the problem that the agent does not know how it should behave to maximize the expected return and thus have to interact with the environment to learn by trial-and-error. This means that it has to explore the environment by interactions and observe their consequences and the reward signals. This information does not contain what the \enquote{right} action was supposed to be but the agent can still construct a policy from it. Exploiting means that the agent is using its current policy to determine the best action, i.e., is greedy with respect to the policy. It can happen that the current policy is stuck in a local optima because the agent has not explored the search space thorough enough to build a good estimate of the performance of other actions.
+    An important concept in reinforcement learning is the \textit{exploration-exploitation} trade-off. It refers to the problem that the agent does not know how it should behave to maximize the expected return and thus have to interact with the environment to learn by trial-and-error. This means that it has to explore the environment by interactions and observe their consequences and the reward signals. This information does not contain what the \enquote{right} action was supposed to be but the agent can still construct a policy from it. Exploiting means that the agent is using its current policy to determine the best action, i.e., it is greedy with respect to the policy. It can happen that the current policy is stuck in a local optima because the agent has not explored the search space thorough enough to build a good estimate of the performance of other actions.
 
-    A simple technique to enforcing exploration is by training using $\epsilon$-greedy policy, see algorithm \ref{alg:epsilon_greedy_policy}, that take the greedy action with probability $1 - \epsilon$ and a uniformly random action with probability $\epsilon$. This is the approach taken in this report but there are more sophisticated techniques to balance these two acts.
+    A simple technique to enforcing exploration is by training using $\epsilon$-greedy policy, see algorithm \ref{alg:epsilon_greedy_policy}, which takes the greedy action with probability $1 - \epsilon$ and a uniformly random action with probability $\epsilon$. This is the approach taken in this report but there are more sophisticated techniques to balance these two acts.
 
     \begin{algorithm}[H]
         \begin{algorithmic}[1]
@@ -175,7 +175,7 @@
 
     \subsection*{Temporal Difference Learning}
 
-    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It update new estimates partially on previous estimates, by bootstrapping, without waiting for the final outcome. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td_learning} shows the general outline of how it works and what will differ between the algorithms is line 9, the update rule of $Q(S, A)$. We have used a tabular representation of the Q-function, i.e., we map a state-action pair to an action-value using a hash table.
+    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It updates new estimates partially on previous estimates without waiting for the final outcome. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td_learning} shows the general outline of how it works and what will differ between the algorithms is line 9, the update rule of $Q(S, A)$. We have used a tabular representation of the Q-function, i.e., we map a state-action pair to an action-value using a hash table.
 
     \begin{algorithm}[H]
         \begin{algorithmic}[1]
@@ -200,7 +200,7 @@
             \Return{Q}
             \EndFunction
         \end{algorithmic}
-        \caption{TD Learning Algorithm.}
+        \caption{TD Learning Algorithm}
         \label{alg:td_learning}
     \end{algorithm}
 
@@ -254,6 +254,6 @@
 
     \subsection*{Other Learning Methods}
 
-    There are many other learning methods that are not used in this report that have interesting properties. Methods such as those based on \textit{dynamic programming} which is an important optimization method, \textit{monte carlo}, and also extensions to those as well as to the algorithms presented above. We highly recommend the book written by Sutton and Barto \cite{sutton1998reinforcement} for more information.
+    There are many other learning methods that are not used in this report that have interesting properties. Methods such as those based on \textit{dynamic programming} which is an important optimization method, \textit{Monte Carlo}, and also extensions to those as well as to the algorithms presented above. We highly recommend the book written by Sutton and Barto \cite{sutton1998reinforcement} for more information.
 
 \end{document}
