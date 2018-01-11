@@ -1,7 +1,16 @@
 import os
 
+from src.algorithms.qlearning import QLearning
+from src.algorithms.sarsa import Sarsa, ExpectedSarsa
+from src.core.discount_factor import StaticDiscountFactor
+from src.core.learning_rate import StaticLearningRate
+from src.core.policy import EpsilonGreedyPolicy
+
 from src.core.reward import Reward
 from src.core.state import State
+from src.core.value_function import DictActionValueFunction
+from src.snake.environment import SnakeEnvironment
+from src.snake.parameters import SnakeParameters
 from src.util.io import write_model, read_model, get_model_path
 
 
@@ -105,3 +114,38 @@ class Experiment(object):
 			self.epsilon,
 			self.env.rows,
 			self.env.cols)
+
+
+def setup_experiment(model_class, exp_type, seed):
+	if model_class not in (QLearning, Sarsa, ExpectedSarsa):
+		raise ValueError("Unknown model : %s" % (model_class,))
+
+	if model_class == QLearning:
+		learning_rate = 0.85
+		discount_factor = 0.85
+	else:
+		learning_rate = 0.15
+		discount_factor = 0.85
+
+	epsilon = 0.15
+	train_episodes = 100000
+	value_function = DictActionValueFunction(0)
+	learning_rate = StaticLearningRate(learning_rate)
+	discount_factor = StaticDiscountFactor(discount_factor)
+
+	snake_params = SnakeParameters()
+	env = SnakeEnvironment(snake_params)
+	policy = EpsilonGreedyPolicy(env, epsilon)
+
+	experiment = Experiment(env=env,
+							model_class=model_class,
+							experiment_type=exp_type,
+							seed=seed,
+							epsilon=epsilon,
+							train_episodes=train_episodes,
+							value_function=value_function,
+							learning_rate=learning_rate,
+							discount_factor=discount_factor,
+							policy=policy)
+	experiment.load()
+	return experiment
