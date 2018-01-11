@@ -158,11 +158,13 @@ class Window(QMainWindow):
 			self.timer.stop()
 
 		if event.timerId() == self.timer.timerId():
+			# FIXME: This repaint fixes issues that happens upon death but makes each move delayed by one frame.
+			self.repaint()
 			self.previous_state = self.current_state
 			self.previous_action = self.agent_widget.get_action(self.current_state)
 			self.current_state, _ = self.env.step(self.previous_action)
 			self.is_running = not self.env.episode_is_done()
-			self.repaint()
+			# self.repaint()
 
 	def center(self):
 		frame_gm = self.frameGeometry()

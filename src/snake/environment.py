@@ -63,6 +63,14 @@ class SnakeEnvironment(Environment):
 	def score(self):
 		return self.food_count * 100
 
+	@property
+	def rows(self):
+		return self.board.rows
+
+	@property
+	def cols(self):
+		return self.board.cols
+
 	def __snake_is_dead(self):
 		# Snake is outside board
 		if (self.snake.head[0] < 0 or self.snake.head[0] >= self.board.rows) or \

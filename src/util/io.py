@@ -3,7 +3,6 @@ import pickle
 
 from src.algorithms.qlearning import QLearning
 from src.algorithms.sarsa import Sarsa, ExpectedSarsa
-from src.util.util import get_project_path
 
 
 def write_model(model, outfile):
@@ -37,3 +36,7 @@ def get_model_file_paths_from_dir(directory):
 				  for file in os.listdir(directory)
 				  if file.endswith(".p")]
 	return file_paths
+
+
+def get_project_path():
+	return os.environ["DMP_PATH"]
