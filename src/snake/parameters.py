@@ -25,22 +25,3 @@ class SnakeParameters(object):
 		# Learning Related
 		self.state = SnakeFoodScoreState
 		self.reward = NegTravelPosScore
-		self.discount_factor = StaticDiscountFactor(0.85)
-		self.learning_rate = StaticLearningRate(0.15)
-		self.epsilon = 0.15
-		self.policy = None
-		self.value_function = DictActionValueFunction(0)
-		self.train_episodes = 1000000
-
-	@property
-	def file_str(self):
-		return "%s_%s_%s_%s_%s_%i_%.2f_%.2f_%.2f_%ix%i" % (self.state.__name__,
-														   self.reward.__name__,
-														   self.policy.__class__.__name__,
-														   self.discount_factor.__class__.__name__,
-														   self.learning_rate.__class__.__name__,
-														   self.train_episodes,
-														   self.discount_factor.discount,
-														   self.learning_rate.rate,
-														   self.epsilon,
-														   self.rows, self.cols)
