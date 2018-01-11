@@ -4,11 +4,11 @@
 
     \section*{\centering Discussion}
 
-    In this part we discuss the results that we have gotten from our two experiments and point out what we have learned. We discuss them in the order they presented previously.
+    In this part we discuss the results that we have gotten from our two experiments and point out what we have learned. We discuss them in the order they were presented previously.
 
     \subsection*{Reward Results}
 
-    The first thing we noticed from the reward experiment is that Q-learning and the two Sarsa algorithms behave rather differently. Q-learning does not seem to be as susceptible to, what we would consider, bad reward functions that do not reflect the goal such as the \textit{ZeroTravelZeroScore}-state. For the Sarsa variants these types of states seem to be hopeless for learning as was our hypothesis. Since Q-learning uses the max operator it is known to be overestimating the value function which might be one reason for not perform as badly. Methods for negating this problem have been developed such as double Q-learning by van Hasselt \cite{hasselt2010double}.
+    The first thing we noticed from the reward experiments is that Q-learning and the two Sarsa algorithms behave rather differently. Q-learning does not seem to be as susceptible to, what we would consider, bad reward functions that do not reflect the goal such as the \textit{ZeroTravelZeroScore}-state. For the Sarsa variants these types of states seem to be hopeless for learning as was our hypothesis. Since Q-learning uses the max operator it is known to be overestimating the value function which might be one reason for not perform as badly. Methods for negating this problem have been developed such as double Q-learning by van Hasselt \cite{hasselt2010double}.
 
     However, since the average food count is around 1 this means that the agent only eats a single apple which may not necessarily indicate that it has learnt anything and is just randomly moving around and gets lucky. By actually watching the agent play the game we have seen that it actually learns to navigate to the first food source but then commits suicide by colliding with the game border. On rare occasions when the next food gets located nearby it eats two of them before colliding with the game border.
 

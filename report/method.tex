@@ -3,11 +3,11 @@
 \begin{document}
     \section*{\centering Method}
 
-    In order the answer the research questions presented in the introduction, we have divided the experiments into two parts. One experiment in which we look at the correlation between the reward function and the goal of the game and another where we investigate the performance of different state representations.
+    In order the answer the research questions presented in the introduction, we have divided the experiments into two parts. One experiments in which we look at the correlation between the reward function and the goal of the game and another where we investigate the performance of different state representations.
 
     \subsection*{Reward Experiment}
 
-    Our hypothesis is that it is essential that the reward function reflects what the goal of the problem is and in our case that is to gather as many apples as possible, preferably in fewer time steps. To perform this experiment we have constructed 9 reward functions with all the combinations of the following characteristics
+    Our hypothesis is that it is essential that the reward function reflects what the goal of the problem is and in our case that is to gather as many apples as possible, preferably in fewer time steps. To perform this experiments we have constructed 9 reward functions with all the combinations of the following characteristics
 
     \begin{center}
         \begin{tabular}{| l |}
@@ -27,7 +27,7 @@
 
     \textbf{Is it better if the reward function combines reinforcement and punishment?} If this is true we expect the reward function that gives positive score rewards at the end of the episode and -1 reward at each time step has the best performance.
 
-    In order to do this experiment we also need to choose state representations and we choose to use two different. The board state with all additional information and the directional distance state with all additional information, as described below, since they contains the most amount of information.
+    In order to do this experiments we also need to choose state representations and we choose to use two different. The board state with all additional information and the directional distance state with all additional information, as described below, since they contains the most amount of information.
 
     \subsection*{State Experiment}
 
@@ -40,7 +40,7 @@
     The 4 state representations are the following
 
     \begin{itemize}
-        \item \textbf{Board}: Represents the complete board state as the game is designed.
+        \item \textbf{Board}: Represents the complete board state as the game engine represents it.
         \item \textbf{SnakeFood}: Represents coordinates of the snake's head/body and the coordinate of the food source.
         \item \textbf{Directional}: Represents the direction the snake should travel to get to the food source without following the dynamics of the game. That means it might not be possible to change to that direction with a single action, e.g., the snake travels east but should travel west.
         \item \textbf{DirectionalDistance}: Represent the same direction as above but also contains the Manhattan distance from the head of the snake to the food source.
@@ -48,7 +48,7 @@
 
     and each state is split up into 4 different states considering with/without board dimensions and with/without score, which gives 16 states in total.
 
-    To perform this experiment we also require a reward function which was decided based on the reward experiment by picking the best performing one. It turned out to be the reward function that gave 0 reward each time step and positive score as reward at the end of the episode.
+    To perform this experiments we also require a reward function which was decided based on the reward experiments by picking the best performing one. It turned out to be the reward function that gave 0 reward each time step and positive score as reward at the end of the episode.
 
     \subsubsection*{Hyperparameters}
 
