@@ -1,9 +1,9 @@
 import numpy as np
 
-from src.experiment.analysis import plot_model_analysis, read_models, filter_models_with_rewards, filter_models, \
+from src.experiments.analysis import plot_model_analysis, read_models, filter_models_with_rewards, filter_models, \
 	get_aggregated_models
-from src.experiment.params import ExperimentParameters
-from src.experiment.reward.params import get_reward_seeds
+from src.experiments.params import ExperimentParameters
+from src.experiments.reward.params import get_reward_seeds
 from src.util.math import compute_mean_over_time
 
 

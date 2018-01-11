@@ -1,4 +1,4 @@
-from src.experiment.analysis import read_models, plot_model_analysis
+from src.experiments.analysis import read_models, plot_model_analysis
 
 
 def analyze_models(params):

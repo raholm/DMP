@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from matplotlib import pyplot as plt
 
-from src.experiment.plot import plot_multi_average_reward_over_time, plot_multi_average_actions_over_time, \
+from src.experiments.plot import plot_multi_average_reward_over_time, plot_multi_average_actions_over_time, \
 	plot_multi_average_food_count_over_time, plot_multi_average_self_collision_death_over_time
 from src.util.io import read_model
 
@@ -86,7 +86,7 @@ def get_aggregated_models(algorithm, experiment, params, seeds):
 		raise ValueError("Unknown algorithm.")
 
 	if experiment not in ("reward", "state", "params"):
-		raise ValueError("Unknown experiment.")
+		raise ValueError("Unknown experiments.")
 
 	filename_models = defaultdict(list)
 

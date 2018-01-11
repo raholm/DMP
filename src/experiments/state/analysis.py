@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.experiment.analysis import filter_models, plot_model_analysis, read_models
+from src.experiments.analysis import filter_models, plot_model_analysis, read_models
 
 
 def analyze_board_state_models(models, states, params):

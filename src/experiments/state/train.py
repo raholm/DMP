@@ -2,7 +2,7 @@ from timeit import default_timer as timer
 
 import numpy as np
 
-from src.experiment.train import train_and_store_model
+from src.experiments.train import train_and_store_model
 from src.snake.state import BoardState, BoardDimensionState, BoardScoreState, BoardDimensionScoreState, SnakeFoodState, \
 	SnakeFoodDimensionState, SnakeFoodScoreState, SnakeFoodDimensionScoreState, DirectionalState, \
 	DirectionalDimensionState, DirectionalScoreState, DirectionalDimensionScoreState, DirectionalDistanceState, \
