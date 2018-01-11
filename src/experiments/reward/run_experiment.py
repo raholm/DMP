@@ -11,8 +11,12 @@ from src.snake.reward import NegTravelPosScore, PosTravelPosScore, NegDistancePo
 	NegDistanceNegSelfCollisionPosBodySize, NegDistanceNegBorderCollisionPosBodySize, \
 	ZeroTravelPosScore
 from src.snake.state import DirectionalDimensionScoreState, \
-	BoardDimensionScoreState
-from src.util.util import filter_models_with_rewards_by_state
+	BoardDimensionScoreState, BoardState, BoardScoreState, BoardDimensionState
+from src.util.util import filter_models_with_rewards_by_state, get_state_class_from_string, get_reward_class_from_string
+
+
+def get_test_seed():
+	return [1337]
 
 
 def get_seeds():
@@ -31,6 +35,20 @@ def get_rewards():
 			NegDistancePosBodySize,
 			NegDistanceNegSelfCollisionPosBodySize,
 			NegDistanceNegBorderCollisionPosBodySize]
+
+
+def get_experiment():
+	experiment = setup_experiment(QLearning, "reward", get_seeds()[0])
+	experiment.train_episodes = 1000
+	return experiment
+
+
+def get_state_from_file_path(file_path):
+	return file_path.split("/")[-1].split("_")[0]
+
+
+def get_reward_from_file_path(file_path):
+	return file_path.split("/")[-1].split("_")[1]
 
 
 def train_experiment(experiment, states=None, rewards=None, pairwise=False):
@@ -104,9 +122,10 @@ def run_experiment_in_simulator(experiment, state=None, reward=None):
 	start_app(env, agent, params)
 
 
-def extract_models_from_experiment(experiment, states,
-								   rewards, pairwise=False):
-	models = {}
+def get_models_from_experiment(experiment, states,
+							   rewards, pairwise=False,
+							   train_if_missing=False):
+	models_dict = {}
 
 	if pairwise:
 		for state, reward in zip(states, rewards):
@@ -114,10 +133,10 @@ def extract_models_from_experiment(experiment, states,
 			experiment.reward = reward
 			experiment.load()
 
-			if not experiment.has_cached_model():
+			if not experiment.has_cached_model() and train_if_missing:
 				experiment.train()
 
-			models[experiment.get_model_path()] = experiment.model_
+			models_dict[experiment.get_model_path()] = experiment.model_
 	else:
 		for state in states:
 			for reward in rewards:
@@ -125,18 +144,26 @@ def extract_models_from_experiment(experiment, states,
 				experiment.reward = reward
 				experiment.load()
 
-				if not experiment.has_cached_model():
+				if not experiment.has_cached_model() and train_if_missing:
 					experiment.train()
 
-				models[experiment.get_model_path()] = experiment.model_
+				models_dict[experiment.get_model_path()] = experiment.model_
 
-	return models
+	models = []
+	states = []
+	rewards = []
+	file_paths = []
 
+	for file_path, model in models_dict.items():
+		state = get_state_from_file_path(file_path)
+		reward = get_reward_from_file_path(file_path)
 
-def get_experiment():
-	experiment = setup_experiment(QLearning, "reward", get_seeds()[0])
-	experiment.train_episodes = 10000
-	return experiment
+		models.append(model)
+		states.append(state)
+		rewards.append(reward)
+		file_paths.append(file_path)
+
+	return models, states, rewards, file_paths
 
 
 def train_models():
@@ -144,27 +171,9 @@ def train_models():
 
 
 def compare_models():
-	experiment = setup_experiment(QLearning, "reward", get_seeds()[0])
-	experiment.train_episodes = 100000
-
-	filepath_model_dict = extract_models_from_experiment(experiment,
-														 get_states(),
-														 get_rewards())
-
-	extract_state = lambda file_path: file_path.split("/")[-1].split("_")[0]
-	extract_reward = lambda file_path: file_path.split("/")[-1].split("_")[1]
-
-	models = []
-	states = []
-	rewards = []
-
-	for file_path, model in filepath_model_dict.items():
-		state = extract_state(file_path)
-		reward = extract_reward(file_path)
-
-		models.append(model)
-		states.append(state)
-		rewards.append(reward)
+	models, states, rewards, _ = get_models_from_experiment(get_experiment(),
+															get_states(),
+															get_rewards())
 
 	models, states, rewards = \
 		filter_models_with_rewards_by_state(models, states, rewards,
@@ -189,9 +198,55 @@ def compare_models():
 	plt.show()
 
 
+def experiment_board_state_with_and_without_extra_information():
+	experiment = get_experiment()
+	states = [BoardState,
+			  BoardScoreState,
+			  BoardDimensionState,
+			  BoardDimensionScoreState]
+	rewards = [ZeroTravelPosScore]
+
+	models, states, rewards, _ = get_models_from_experiment(experiment,
+															states,
+															rewards,
+															train_if_missing=True)
+
+	rewards_per_episode = []
+	food_count_per_episode = []
+
+	for model in models:
+		rewards_per_episode.append(model.rewards_per_episode[::10])
+		food_count_per_episode.append(model.food_count_per_episode[::10])
+
+	x = np.arange(1, (len(rewards_per_episode[0]) * 10) + 1, 10)
+
+	plt.subplot(211)
+	plot_multi_average_reward_over_time(x, rewards_per_episode, states)
+
+	plt.subplot(212)
+	plot_multi_average_food_count_over_time(x, food_count_per_episode, states)
+
+	plt.show()
+
+	states = list(map(get_state_class_from_string, np.unique(states)))
+	rewards = list(map(get_reward_class_from_string, np.unique(rewards)))
+	n_episodes = 1000
+
+	test_results = test_experiment(experiment, n_episodes=n_episodes,
+								   states=states, rewards=rewards)
+
+	print("Test Performance on %i episodes: " % (n_episodes,))
+	for (state, reward), result in test_results.items():
+		print("%s: Mean Score %0.03f, Std Score %0.03f" %
+			  (state.__name__,
+			   np.mean(result["food"]),
+			   np.std(result["food"])), )
+
+
 def main():
 	# train_models()
-	compare_models()
+	# compare_models()
+	experiment_board_state_with_and_without_extra_information()
 	return
 
 	experiment = setup_experiment(QLearning, "reward", get_seeds()[0])

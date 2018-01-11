@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 from src.algorithms.qlearning import QLearning
 from src.algorithms.sarsa import Sarsa, ExpectedSarsa
@@ -59,6 +60,15 @@ class Experiment(object):
 			raise ValueError("Input is not a reward : %s" % (type(reward),))
 
 		self.env.params.reward = reward
+
+	@property
+	def seed(self):
+		return self._seed
+
+	@seed.setter
+	def seed(self, value):
+		self._seed = value
+		np.random.seed(self._seed)
 
 	def train(self):
 		self._check_model_is_loaded()

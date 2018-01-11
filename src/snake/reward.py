@@ -1,9 +1,9 @@
 from src.core.reward import Reward
 from src.util.math import manhattan
 
-REWARD_PER_BODY_PART = 1000
+REWARD_PER_BODY_PART = 100
 REWARD_COLLISION = -10000
-REWARD_TIME_STEPS = -100
+REWARD_TIME_STEPS = -10
 
 
 class SnakeReward(Reward):

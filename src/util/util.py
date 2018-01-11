@@ -1,3 +1,6 @@
+import importlib
+
+
 def filter_models_by_state(models, states, predicate):
 	current_models = []
 	current_states = []
@@ -22,3 +25,11 @@ def filter_models_with_rewards_by_state(models, states, rewards, predicate):
 			current_rewards.append(reward)
 
 	return current_models, current_states, current_rewards
+
+
+def get_state_class_from_string(state):
+	return getattr(importlib.import_module("src.snake.state"), state)
+
+
+def get_reward_class_from_string(reward):
+	return getattr(importlib.import_module("src.snake.reward"), reward)
