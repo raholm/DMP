@@ -12,13 +12,13 @@ class SnakeParameters(object):
 		self.update_rate = 250
 
 		# Board Related
-		self.rows = 3
-		self.cols = 3
+		self.rows = 5
+		self.cols = 5
 		self.cell_size = 48
 
 		# Snake Related
 		self.initial_snake_size = 1
-		self.initial_snake_position = (1, 1)
+		self.initial_snake_position = (2, 2)
 		self.initial_snake_direction = SnakeDirection.East
 		self.tail_size_increase = 1
 
