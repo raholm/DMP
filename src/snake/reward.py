@@ -116,3 +116,11 @@ class NegDistanceNegBorderCollisionPosBodySize(SnakeReward):
 				not env.death_from_self_collision)
 		else:
 			self._value = -manhattan(env.snake.head, env.food)
+
+
+class NegTravelNegBorderCollisionPosScore(SnakeReward):
+	def __init__(self, env, state, action, new_state):
+		if env.episode_is_done():
+			self._value = env.score + REWARD_COLLISION * (not env.death_from_self_collision)
+		else:
+			self._value = -1

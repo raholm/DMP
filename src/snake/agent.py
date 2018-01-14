@@ -1,3 +1,5 @@
+import numpy as np
+
 from src.core.agent import Agent
 
 
@@ -15,4 +17,13 @@ class SnakeAgent(Agent):
 		self.policy = policy
 
 	def get_action(self, state):
+		print(state)
 		return self.policy.get_action(state, self.action_values)
+
+
+class SnakeRandomAgent(Agent):
+	def __init__(self, env):
+		self.env = env
+
+	def get_action(self, state):
+		return np.random.choice(self.env.get_valid_actions(state))

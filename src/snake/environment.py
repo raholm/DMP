@@ -59,9 +59,27 @@ class SnakeEnvironment(Environment):
 		reward = self.params.reward(self, old_state, action, new_state)
 		return new_state, reward
 
+	def run(self, agent, n_episodes):
+		scores = [None] * n_episodes
+
+		for iteration in range(n_episodes):
+			state = self.start_new_episode()
+
+			while not self.episode_is_done():
+				action = agent.get_action(state)
+				state, _ = self.step(action)
+
+			scores[iteration] = self.score
+
+		return scores
+
 	@property
 	def score(self):
-		return self.food_count * 100
+		return self.food_count * self.game_score_coef
+
+	@property
+	def game_score_coef(self):
+		return 100
 
 	@property
 	def rows(self):
