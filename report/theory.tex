@@ -8,7 +8,7 @@
 
     \subsection*{Framework}
 
-    To begin the definition of the reinforcement learning problem we first need to define a few fundamental terms that are required in the following formalization. The basic idea is to learn from interactions in order to achieve a goal. The learner is called the \textit{agent} which interacts with the \textit{environment} by performing \textit{actions} in a sequential manner. The agent is continuously interacting with the environment and it responds based on those interactions that arise in the form of a representation of the \textit{state} of the environment. Not only may the environment change its state in reponse to the agent's actions, it also give rise to \textit{rewards}, numerical values that the agent is trying to maximize through its actions. Figure \ref{fig:agent_env} shows the interactions between the agent and the environment. A complete specification of an environment and how its rewards are determined defines a \textit{task}, which is an instance of a reinforcement learning problem.
+    To begin the definition of the reinforcement learning problem we first need to define a few fundamental terms that are required in the following formalization. The basic idea is to learn from interactions in order to achieve a goal. The learner is called the \textit{agent} which interacts with the \textit{environment} by performing \textit{actions} in a sequential manner. The agent is continuously interacting with the environment and the environment in turn responds based on those interactions in the form of a representation of its current \textit{state}. Not only may the environment change its state in reponse to the agent's actions, it also give rise to \textit{rewards}, numerical values that the agent is trying to maximize through its actions. Figure \ref{fig:agent_env} shows the interaction cycle between the agent and the environment. A complete specification of an environment and how its rewards are determined defines a \textit{task}, which is an instance of a reinforcement learning problem.
 
     \begin{figure}[H]
         \centering
@@ -17,7 +17,22 @@
         \label{fig:agent_env}
     \end{figure}
 
-    This rather simple framework is actually abstract and flexible enough to be applied in many problems in many different ways. The actions could range from low level controls such as turning the wheels on the car to driving from point A to point B. Similarly, the state could represent current road surface condition to traffic flow in the nearby area. The reward will however always be a single numerical value since we require it to be comparable to be able to determine the best action, the action that will maximize the total amount of reward the agent receives. We will come back to what that means in the following section.
+    This rather simple framework is actually abstract and flexible enough to be applied in many problems in many different ways. The actions could range from low level controls such as turning the wheels on the car to driving from point A to point B. Similarly, the state could represent current road surface condition to traffic flow in the nearby area. The reward will however always be a single numerical value since we require it to be comparable and have a well defined ordering to be able to determine the best action, the action that will maximize the total amount of reward the agent receives. We will come back to what that means in the following sections.
+
+    \subsection*{Snake}
+
+    Before defining the \textit{Markov decision process} we present our problem we want our agent to try to solve which is the game \textit{Snake}\footnote{https://en.wikipedia.org/wiki/Snake\_(video\_game)} and its an old game with many variants. In this report, the game is played out as simple as possible with only one player, i.e., the agent and no obstructing environment. The goal of the game is that you play as a snake by controlling the head and the aim is to eat as many apples as possible without colliding with either the snake's body or the edges of the game board. At each time unit the snake moves one unit in the direction it is facing and the difficulty is that each time you eat an apple your body becomes longer by 1 unit and thus larger portion of the game board is covered by it. We have defined the final game score to be 100 per eaten apple.  In order to reduce the state space the game board is played on a 5x5 grid which can be seen in figure \ref{fig:snake}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=.3\textwidth]{./images/snake1}\hfill
+        \includegraphics[width=.3\textwidth]{./images/snake2}\hfill
+        \includegraphics[width=.3\textwidth]{./images/snake3}
+        \caption{5x5 board of Snake where the snake consists of the orange (head) and green parts (body) and the red part is the apple.}
+        \label{fig:snake}
+    \end{figure}
+
+    We will use Snake to further concretize the definitions below.
 
     \subsection*{Markov Decision Process}
 
@@ -34,6 +49,8 @@
     $R_t \in \rewardspace$: Reward at time $t$
     \newline
     where $t \in \{ 0, 1, 2, \ldots, T \}$ since we have discrete time steps. Capital letters with a subscript such as $A_t$ are regarded as random variables while a lowercase letter such as $a$ is a realisation of a random variable.
+
+    For snake the action space $\actionspace = \{ \text{North}, \text{Sourth}, \text{East}, \text{West} \}$ but the state space $\statespace$ is not defined yet. We will present different state representations in the method.
 
     \subsubsection*{Dynamics}
 
@@ -59,6 +76,8 @@
         \expectation \left[ R_{t + 1} | S_t = s, A_t = a \right] =
         \sum_{r \in \rewardspace} r \sum_{\nextstate \in \statespace} p(\nextstate, r | s, a).
     \end{align*}
+
+    In our case the state-transitions probabilities will most of the times be either 0 or 1 since the game will be deterministic in the sense that if the snake is facing north it will always move north, not south or any other direction, hence the next state is known for certain in most situations. The only random element is the placement of the apple so if the action results in the snake eating an apple the next state will not be known for certain.
 
     \subsubsection*{Policy}
 
@@ -125,11 +144,17 @@
         \end{cases} \\
     \end{align*}
 
-    and we can clearly see that is it easier to acquire the optimal policy if we have access to the optimal action-value function. The problem is that there are, in general, no closed form solution to finding these optimal value functions and therein lies the difficulty of reinforcement learning. After an explanation of exploration and our problem formulation we will present a few iterative solution methods for approximating these optimal value functions, the action-value function in particular, that have been used in this report.
+    and we can clearly see that is it easier to acquire the optimal policy if we have access to the optimal action-value function. The problem is that there are, in general, no closed form solution to finding these optimal value functions and therein lies the difficulty of reinforcement learning. After a summary of the Snake's MDP and an explanation of exploration we will present a few iterative solution methods for approximating these optimal value functions, the action-value function in particular, that have been used in this report.
 
+    \subsubsection*{Snake MDP}
+
+    We mentioned the term \textit{episodic task} and it refers to problems that have a natural notion of final time step which Snake naturally does, that is when the snake collides with something and dies. We denote such a state as the \textit{terminal state}.
+
+    To summarize the Snake's MDP we have that the $\actionspace = \{ \text{North}, \text{South}, \text{East}, \text{West} \}$ and the state-transition probabilities are mostly either 0 or 1 with the exception of when the action makes the snake eat an apple which the environment will react to by placing a new apple on the grid uniformly at random. We have not yet defined $\statespace$ nor the reward function which we will come back to in the method.
+    
     \subsubsection*{Exploration versus Exploitation}
 
-    An important concept in reinforcement learning is the \textit{exploration-exploitation} trade-off. It refers to the problem that the agent does not know how it should behave to maximize the expected return and thus have to interact with the environment to learn by trial-and-error. This means that it has to explore the environment by interactions and observe their consequences and the reward signals. This information does not contain what the \enquote{right} action was supposed to be but the agent can still construct a policy from it. Exploiting means that the agent is using its current policy to determine the best action, i.e., it is greedy with respect to the policy. It can happen that the current policy is stuck in a local optima because the agent has not explored the search space thorough enough to build a good estimate of the performance of other actions.
+    An important concept in reinforcement learning is the \textit{exploration-exploitation} trade-off. It refers to the problem that the agent does not know how it should behave to maximize the expected return and thus have to interact with the environment to learn by trial-and-error. This means that it has to explore the environment by interactions and observe their consequences and the reward signals. This information does not contain what the \enquote{right} action was supposed to be but the agent can still construct a policy from it. Exploiting means that the agent is using its current policy to determine the best action, i.e., it is greedy with respect to the state-value function (or action-value function). It can happen that the current policy is stuck in a local optima because the agent has not explored the search space thorough enough to build a good estimate of the performance of other actions.
 
     A simple technique to enforcing exploration is by training using $\epsilon$-greedy policy, see algorithm \ref{alg:epsilon_greedy_policy}, which takes the greedy action with probability $1 - \epsilon$ and a uniformly random action with probability $\epsilon$. This is the approach taken in this report but there are more sophisticated techniques to balance these two acts.
 
@@ -154,28 +179,11 @@
         \label{alg:epsilon_greedy_policy}
     \end{algorithm}
 
-    \subsection*{Snake}
-
-    This report is meant to look at some of the fundamental building blocks of reinforcement learning and in order to do so we need a problem that we would like to solve. Snake is an old game\footnote{https://en.wikipedia.org/wiki/Snake\_(video\_game)} and has been around for a long time and there are many variations of it. In this report, the game is played out as simple as possible with only one player, i.e., the agent and no obstructing environment. The goal of the game is that you play as a snake by controlling the head and the aim is to eat as many apples as possible without colliding with either the snake's body or the edges of the game board. At each time unit the snake moves one unit in the direction it is headed and the difficulty is that each time you eat an apple your body becomes longer by 1 unit and thus larger portion of the game board is covered by it. In order to reduce the state space the game board is played on a 5x5 grid which can be seen in figure \ref{fig:snake}.
-
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=.3\textwidth]{./images/snake1}\hfill
-        \includegraphics[width=.3\textwidth]{./images/snake2}\hfill
-        \includegraphics[width=.3\textwidth]{./images/snake3}
-        \caption{5x5 board of Snake where the snake consists of the orange (head) and green parts (body) and the red part is the apple.}
-        \label{fig:snake}
-    \end{figure}
-
     A term that was mentioned previously was \textit{episodic task} which refers to problems that have a natural notion of final time step which Snake does, that is when the snake collides with something. We denote this state as the \textit{terminal state} which will follow with a reset of the game in the same starting state independently of how it ended.
-
-    \subsubsection*{MDP}
-
-    With the previous formalization of the MDP we can now define Snake's MDP and its a rather simple definition. We assume that the actions are completely deterministic and the state transitions are also deterministic. Given our action space, $\actionspace = \{ \text{North}, \text{South}, \text{West}, \text{East} \}$, that means that if the snake moves north it will move north, not any other direction, and the next state will reflect that. Figure \ref{fig:snake} shows three different states that the agent will be able to observe completely. There is no stochasticity in the environment except the positioning of the apple which will be randomly placed uniformly whenever eaten so there is only one food source at any single point in time. We have chosen that each eaten apple gives the player 100 game points and at the end of the game the total score is thus 100 $\times$ number of apples eaten.
-
+    
     \subsection*{Temporal Difference Learning}
 
-    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It updates new estimates partially on previous estimates without waiting for the final outcome. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td_learning} shows the general outline of how it works and what will differ between the algorithms is line 9, the update rule of $Q(S, A)$. We have used a tabular representation of the Q-function, i.e., we map a state-action pair to an action-value using a hash table.
+    \textit{Temporal Difference} (TD) learning is a learning methodology that learns directly from raw experience without a model of the environment's dynamics. It updates new estimates partially on previous estimates without waiting for the final outcome. The algorithms, or learning methods, that have been used in this paper are all based on TD learning and will be described below. Algorithm \ref{alg:td_learning} shows the general outline of how it works and what will differ between the algorithms is line 9, the update rule of $Q(S, A)$. We differentiate choosing the action, determined by our policy, from actually performing it so it becomes a two step process to take an action. We have used a tabular representation of the Q-function, i.e., we map a state-action pair to an action-value using a hash table.
 
     \begin{algorithm}[H]
         \begin{algorithmic}[1]
@@ -189,9 +197,9 @@
             \Let{Choose $A$ from $S$ using policy $\pi$ ($\epsilon$-greedy) derived from $Q$ }
 
             \While{$S$ is non-terminal state}
-            \Let{Take action $A$, observe state $S^\prime$ and reward $R$}
+            \Let{Perform action $A$, observe state $S^\prime$ and reward $R$}
             \Let{Choose $A^\prime$ from $S^\prime$ using policy $\pi$ ($\epsilon$-greedy) derived from $Q$}
-            \Let{Update $Q(S, A)$ based on $(S, A, S^\prime, A^\prime, \pi, \alpha, \gamma$)}
+            \Let{Update $Q(S, A)$ based on $(S, A, R, S^\prime, A^\prime, \pi, \alpha, \gamma$)}
             \Let{$S = S^\prime$}
             \Let{$A = A^\prime$}
             \EndWhile
@@ -213,8 +221,8 @@
         Q(S_t , A_t) +
         \alpha \left[
         R_{t + 1} +
-        \gamma \max_a Q(S_{t + 1}, a) - Q(S_t, A_t).
-        \right]
+        \gamma \max_a Q(S_{t + 1}, a) - Q(S_t, A_t)
+        \right].
     \end{align*}
 
     It is a so called \textit{off-policy} method which is indicated by the $\max$ operation. That means it uses a greedy algorithm to estimate the return at the next step rather than following its current policy, therefore is off its own policy.
