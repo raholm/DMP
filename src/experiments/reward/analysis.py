@@ -1,10 +1,10 @@
 import numpy as np
 
 from src.experiments.analysis import plot_model_analysis, read_models, get_aggregated_models
-from src.util.util import filter_models_by_state, filter_models_with_rewards_by_state
 from src.experiments.params import ExperimentParameters
 from src.experiments.reward.params import get_reward_seeds
 from src.util.math import compute_mean_over_time
+from src.util.util import filter_models_by_state, filter_models_with_rewards_by_state
 
 
 def analyze_board_state_models(models, states, rewards, params):

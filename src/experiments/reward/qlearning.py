@@ -2,10 +2,9 @@ from src.algorithms.qlearning import QLearning
 from src.core.discount_factor import StaticDiscountFactor
 from src.core.learning_rate import StaticLearningRate
 from src.core.policy import EpsilonGreedyPolicy
-from src.experiments.params import ExperimentParameters
-from src.experiments.reward.analysis import analyze_models, analyze_aggregated_models, \
-	analyze_aggregated_reward_food_count_correlations
 from src.experiments.analysis import get_aggregated_models
+from src.experiments.params import ExperimentParameters
+from src.experiments.reward.analysis import analyze_models, analyze_aggregated_models
 from src.experiments.reward.params import get_reward_states, get_reward_seeds
 from src.experiments.reward.train import train_models
 from src.snake.environment import SnakeEnvironment

@@ -1,17 +1,16 @@
-import numpy as np
 import os
 
+import numpy as np
 from matplotlib import pyplot as plt
 
 from src.algorithms.qlearning import QLearning
 from src.experiments.experiment import setup_experiment, test_experiment, get_models_from_experiment, \
 	run_experiment_in_simulator
 from src.experiments.global_settings import get_seeds
-from src.experiments.plot import plot_multi_average_reward_over_time, plot_multi_average_food_count_over_time, \
-	plot_multi_average_game_score_over_time
+from src.experiments.plot import plot_multi_average_game_score_over_time
 from src.experiments.reward.run_experiment import get_test_seed
 from src.snake.agent import SnakeRandomAgent
-from src.snake.reward import ZeroTravelPosScore, NegDistanceNegBorderCollisionPosBodySize, NegTravelPosScore
+from src.snake.reward import ZeroTravelPosScore, NegTravelPosScore
 from src.snake.state import BoardState, BoardScoreState, BoardDimensionState, BoardDimensionScoreState, \
 	DirectionalScoreState
 from src.util.io import get_project_path

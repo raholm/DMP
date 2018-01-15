@@ -2,9 +2,9 @@ from src.algorithms.sarsa import ExpectedSarsa
 from src.core.policy import EpsilonGreedyPolicy
 from src.experiments.parameters.analysis import analyze_models
 from src.experiments.parameters.params import get_snake_parameters, get_parameters_seed
+from src.experiments.params import ExperimentParameters
 from src.experiments.train import train_and_store_model
 from src.snake.environment import SnakeEnvironment
-from src.experiments.params import ExperimentParameters
 
 
 def train():

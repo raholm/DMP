@@ -1,15 +1,14 @@
 import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 from src.algorithms.qlearning import QLearning
 from src.algorithms.sarsa import Sarsa
 from src.core.policy import GreedyPolicy
-from src.experiments.experiment import setup_experiment, train_experiment, get_models_from_experiment, \
-	run_experiment_in_simulator
+from src.experiments.experiment import setup_experiment, train_experiment
 from src.experiments.global_settings import get_seeds
-from src.experiments.plot import plot_multi_average_reward_over_time, plot_multi_average_food_count_over_time, \
-	plot_multi_average_game_score_over_time
+from src.experiments.plot import plot_multi_average_game_score_over_time
 from src.experiments.state.run_experiment import aggregate_models_by_avg
 from src.snake.agent import SnakeAgent
 from src.snake.reward import NegTravelPosScore, PosTravelPosScore, NegDistancePosBodySize, \

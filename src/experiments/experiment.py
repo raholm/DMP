@@ -1,4 +1,5 @@
 import os
+
 import numpy as np
 
 from src.algorithms.qlearning import QLearning
@@ -6,7 +7,6 @@ from src.algorithms.sarsa import Sarsa, ExpectedSarsa
 from src.core.discount_factor import StaticDiscountFactor
 from src.core.learning_rate import StaticLearningRate
 from src.core.policy import EpsilonGreedyPolicy, GreedyPolicy
-
 from src.core.reward import Reward
 from src.core.state import State
 from src.core.value_function import DictActionValueFunction

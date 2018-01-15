@@ -2,8 +2,8 @@ from src.algorithms.qlearning import QLearning
 from src.core.discount_factor import StaticDiscountFactor
 from src.core.learning_rate import StaticLearningRate
 from src.core.policy import EpsilonGreedyPolicy
-from src.experiments.params import ExperimentParameters
 from src.experiments.analysis import get_aggregated_models
+from src.experiments.params import ExperimentParameters
 from src.experiments.state.analysis import analyze_models, analyze_aggregated_models
 from src.experiments.state.params import get_state_seeds, get_state_reward
 from src.experiments.state.train import train_models

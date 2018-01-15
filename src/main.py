@@ -1,13 +1,7 @@
 import pickle
-
-import os
-
-import sys
-from PyQt5 import QtGui
 from timeit import default_timer as timer
 
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QTextEdit, QFileDialog
+from PyQt5.QtWidgets import QApplication
 
 from src.algorithms.qlearning import QLearning
 from src.algorithms.sarsa import Sarsa

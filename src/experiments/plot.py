@@ -1,6 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
-from cycler import cycler
 
 from src.util.math import compute_mean_over_time
 

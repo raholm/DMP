@@ -1,7 +1,7 @@
 import importlib
+import os
 import sys
 
-import os
 from PyQt5.QtCore import Qt, pyqtSlot, QBasicTimer
 from PyQt5.QtGui import QPainter, QColor
 from PyQt5.QtWidgets import *
