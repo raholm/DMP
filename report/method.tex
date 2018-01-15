@@ -27,7 +27,7 @@
 
     \textbf{Is it better if the reward function combines reinforcement and punishment?} If this is true we expect the reward function that gives positive score rewards at the end of the episode and -1 reward at each time step has the best performance.
 
-    In order to do this experiments we also need to choose state representations and we choose to use two different. The board state with all additional information and the directional distance state with all additional information, as described below, since they contains the most amount of information.
+    In order to do this experiments we also need to choose state representations and we choose to use two very different ones. The board state with the game score and the directional state with the game score, as described below.
 
     \subsection*{State Experiment}
 
@@ -43,7 +43,7 @@
         \item \textbf{Board}: Represents the complete board state as the game engine represents it.
         \item \textbf{SnakeFood}: Represents coordinates of the snake's head/body and the coordinate of the food source.
         \item \textbf{Directional}: Represents the direction the snake should travel to get to the food source without following the dynamics of the game. That means it might not be possible to change to that direction with a single action, e.g., the snake travels east but should travel west.
-        \item \textbf{DirectionalDistance}: Represent the same direction as above but also contains the Manhattan distance from the head of the snake to the food source.
+        \item \textbf{ShortestPath}: Represents the shortest path from the head of the snake to the apple.
     \end{itemize}
 
     and each state is split up into 4 different states considering with/without board dimensions and with/without score, which gives 16 states in total.
