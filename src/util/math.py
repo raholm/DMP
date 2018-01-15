@@ -19,14 +19,13 @@ def compute_mean_over_time(x):
 
 
 def compute_correlation(xs, ys):
-	def get_corr_coefs(models):
-		corr_coefs = []
+	corr_coefs = []
 
-		for x, y in zip(xs, ys):
-			if np.all(x) == 0 or np.all(y) == 0:
-				continue
+	for x, y in zip(xs, ys):
+		if np.all(x == 0) or np.all(y == 0):
+			continue
 
-			corr_coef = np.corrcoef(x, y)
-			corr_coefs.append(corr_coef)
+		corr_coef = np.corrcoef(x, y)
+		corr_coefs.append(corr_coef)
 
-		return corr_coefs
+	return corr_coefs

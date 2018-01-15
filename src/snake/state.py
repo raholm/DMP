@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from src.core.state import State
 from src.snake.board import SnakeCellType
 from src.snake.snake import SnakeDirection
@@ -87,6 +89,62 @@ class DirectionalData(object):
 			direction = SnakeDirection.West
 
 		return direction
+
+
+class ShortestPathData(object):
+	def __init__(self, env):
+		self.data = self.__get_shortest_path(env)
+
+	def __get_shortest_path(self, env):
+		if env.episode_is_done():
+			return ()
+
+		graph = self.__create_adjacency_list(env)
+
+		start = env.snake.head
+		goal = env.food
+
+		explored = set()
+		queue = [[start]]
+
+		if start == goal:
+			return start
+
+		while queue:
+			path = queue.pop(0)
+			node = path[-1]
+
+			if node not in explored:
+				neighbours = graph[node]
+
+				for neighbour in neighbours:
+					new_path = list(path)
+					new_path.append(neighbour)
+					queue.append(new_path)
+
+					if neighbour == goal:
+						return tuple(new_path)
+
+				explored.add(node)
+
+		raise ValueError("Could not find a path between %s and %s" % (start, goal))
+
+	def __create_adjacency_list(self, env):
+		def add(adj_list, a, b):
+			adj_list[a].add(b)
+			adj_list[b].add(a)
+
+		adj_list = defaultdict(set)
+
+		for row in range(env.rows):
+			for col in range(env.cols):
+				if col < env.cols - 1:
+					add(adj_list, (row, col), (row, col + 1))
+				if row < env.rows - 1:
+					for x in range(max(0, col - 1), min(env.cols, env.cols + 2)):
+						add(adj_list, (row, col), (row + 1, col))
+
+		return adj_list
 
 
 class BoardState(SnakeState):
@@ -183,3 +241,9 @@ class DirectionalDistanceDimensionScoreState(SnakeState):
 	@property
 	def data_classes(self):
 		return [DirectionalData, DistanceData, DimensionData, ScoreData]
+
+
+class ShortestPathScoreState(SnakeState):
+	@property
+	def data_classes(self):
+		return [ShortestPathData, ScoreData]
