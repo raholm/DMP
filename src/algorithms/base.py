@@ -69,22 +69,6 @@ class EpisodicTDLearner(object):
 
 		return self
 
-	def run(self, env, n_episodes):
-		scores = [None] * n_episodes
-		foods = [None] * n_episodes
-
-		for iteration in range(n_episodes):
-			state = env.start_new_episode()
-
-			while not env.episode_is_done():
-				action = self.policy.get_action(state, self.Q)
-				state, _ = env.step(action)
-
-			scores[iteration] = env.score
-			foods[iteration] = env.food_count
-
-		return scores, foods
-
 	def compute_estimate(self, state, action, new_state, reward, next_action):
 		current_value = self.Q.get_value(state, action)
 

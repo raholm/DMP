@@ -1,26 +1,26 @@
 import numpy as np
 
 from src.experiments.analysis import plot_model_analysis, read_models
-from src.util import filter_models
+from src.util.util import filter_models_by_state
 
 
 def analyze_board_state_models(models, states, params):
 	current_models, current_states = \
-		filter_models(models, states,
+		filter_models_by_state(models, states,
 					  lambda state: state.startswith("Board"))
 	plot_model_analysis(current_models, current_states, "board_state", params)
 
 
 def analyze_snake_food_state_models(models, states, params):
 	current_models, current_states = \
-		filter_models(models, states,
+		filter_models_by_state(models, states,
 					  lambda state: state.startswith("SnakeFood"))
 	plot_model_analysis(current_models, current_states, "snake_food_state", params)
 
 
 def analyze_directional_state_models(models, states, params):
 	current_models, current_states = \
-		filter_models(models, states,
+		filter_models_by_state(models, states,
 					  lambda state: state.startswith("Directional") and
 									not state.startswith("DirectionalDistance"))
 	plot_model_analysis(current_models, current_states, "directional_state", params)
@@ -28,21 +28,21 @@ def analyze_directional_state_models(models, states, params):
 
 def analyze_directional_distance_state_models(models, states, params):
 	current_models, current_states = \
-		filter_models(models, states,
+		filter_models_by_state(models, states,
 					  lambda state: state.startswith("DirectionalDistance"))
 	plot_model_analysis(current_models, current_states, "directional_distance_state", params)
 
 
 def analyze_state_with_score_models(models, states, params):
 	current_models, current_states = \
-		filter_models(models, states,
+		filter_models_by_state(models, states,
 					  lambda state: "Score" in state)
 	plot_model_analysis(current_models, current_states, "score_dim", params)
 
 
 def analyze_state_with_score_without_dim_models(models, states, params):
 	current_models, current_states = \
-		filter_models(models, states,
+		filter_models_by_state(models, states,
 					  lambda state: "Score" in state and "Dimension" not in state)
 	plot_model_analysis(current_models, current_states, "score", params)
 
