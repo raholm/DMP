@@ -17,7 +17,6 @@ class SnakeAgent(Agent):
 		self.policy = policy
 
 	def get_action(self, state):
-		print(state)
 		return self.policy.get_action(state, self.action_values)
 
 

@@ -171,7 +171,9 @@ def train_models():
 
 
 def compare_models():
-	models, states, rewards, _ = get_models_from_experiment(get_experiment(),
+	experiment = get_experiment()
+
+	models, states, rewards, _ = get_models_from_experiment(experiment,
 															get_states(),
 															get_rewards())
 
@@ -181,11 +183,11 @@ def compare_models():
 											state.startswith("Directional"))
 
 	rewards_per_episode = []
-	food_count_per_episode = []
+	game_score_over_time = []
 
 	for model in models:
 		rewards_per_episode.append(model.rewards_per_episode[::10])
-		food_count_per_episode.append(model.food_count_per_episode[::10])
+		game_score_over_time.append(experiment.env.game_score_coef * model.food_count_per_episode[::10])
 
 	x = np.arange(1, (len(rewards_per_episode[0]) * 10) + 1, 10)
 
@@ -193,7 +195,7 @@ def compare_models():
 	plot_multi_average_reward_over_time(x, rewards_per_episode, rewards)
 
 	plt.subplot(212)
-	plot_multi_average_food_count_over_time(x, food_count_per_episode, rewards)
+	plot_multi_average_food_count_over_time(x, game_score_over_time, rewards)
 
 	plt.show()
 

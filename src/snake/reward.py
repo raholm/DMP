@@ -4,6 +4,7 @@ from src.util.math import manhattan
 REWARD_PER_BODY_PART = 100
 REWARD_COLLISION = -10000
 REWARD_TIME_STEPS = -10
+REWARD_DEATH = -10000
 
 
 class SnakeReward(Reward):
@@ -114,6 +115,14 @@ class NegDistanceNegBorderCollisionPosBodySize(SnakeReward):
 		if env.episode_is_done():
 			self._value = REWARD_PER_BODY_PART * len(env.snake.body) + REWARD_COLLISION * (
 				not env.death_from_self_collision)
+		else:
+			self._value = -manhattan(env.snake.head, env.food)
+
+
+class NegDistanceNegDeathPosBodySize(SnakeReward):
+	def __init__(self, env, state, action, new_state):
+		if env.episode_is_done():
+			self._value = REWARD_PER_BODY_PART * len(env.snake.body) + REWARD_DEATH
 		else:
 			self._value = -manhattan(env.snake.head, env.food)
 
