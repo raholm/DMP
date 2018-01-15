@@ -13,8 +13,9 @@
 \usepackage{array}
 \usepackage[]{algorithm2e}
 \usepackage{caption}
-%% \usepackage{subcaption}
+\usepackage{subcaption}
 
+\setbeamertemplate{caption}[numbered]
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 
@@ -26,7 +27,6 @@ Linköping University \\
 \date{\today}
 
 \begin{document}
-
     %----------------------------------------------------------------------------------------
     %	INTRODUCTION SLIDES
     %----------------------------------------------------------------------------------------
@@ -43,46 +43,19 @@ Linköping University \\
     %	PRESENTATION SLIDES
     %----------------------------------------------------------------------------------------
 
-    %% \begin{figure}
-    %%    \includegraphics[width=0.65\textwidth]{./figure/cluster_example_1}\label{fig:cluster_example_1}
-    %%    \vfill
-    %%    \includegraphics[width=.65\textwidth]{./figure/cluster_example_2}\label{fig:cluster_example_2}
-    %% \end{figure}
-
     \section{Introduction}
 
     \begin{frame}
         \frametitle{Introduction}
-        \begin{itemize}
-            \item Why are we here?
-            \item What are Topic Models?
-            \item Why should I bother knowing about Topic Models?
-        \end{itemize}
     \end{frame}
 
     \begin{frame}
         \frametitle{Use Cases}
-        \begin{itemize}
-            \item Information Retrieval
-            \item Classification
-            \item Clustering
-            \item Summarisation
-        \end{itemize}
     \end{frame}
 
     \section{Motivation}
     \begin{frame}
         \frametitle{Motivation}
-        \begin{itemize}
-            \item Text Curation (Pre-Processing)
-            \item Examples:
-            \begin{itemize}
-                \item Removal of stop words (Schofield et al., 2017)
-                \item Stemming (Schofield and Mimno, 2016)
-                \item Removal of rare words
-                \item Segmentation
-            \end{itemize}
-        \end{itemize}
     \end{frame}
 
     \begin{frame}
@@ -153,27 +126,21 @@ Linköping University \\
         \end{equation*}
     \end{frame}
 
-    \section{Segmentation Algorithms}
+    \section{Backup Diagrams}
 
     \begin{frame}
-        \frametitle{Segmentation Algorithms}
-        \begin{itemize}
-            \item TextTiling (Hearst, 1997)
-            \item TopicTiling (Riedl and Biemann, 2012)
-            \item Topic Segmentation Model (Purver et al., 2006)
-            \item Topic Segmentation with a Structured Topic Model (Du et al., 2013)
-            \item Fixed number of tokens
-        \end{itemize}
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=\linewidth]{./images/backup_diagrams.PNG}
+            \caption{Backup diagrams for state-value function and action-value function.}
+            \label{fig:backup_diagrams}
+        \end{figure}
     \end{frame}
 
     \section{Evaluation}
 
     \begin{frame}
         \frametitle{Evaluation}
-        \begin{itemize}
-            \item Model Evaluation
-            \item Topic Evaluation
-        \end{itemize}
     \end{frame}
 
     \begin{frame}
@@ -200,36 +167,10 @@ Linköping University \\
         \end{algorithm}
     \end{frame}
 
+    \section{Conclusion}
+
     \begin{frame}
-        \frametitle{Coherence and Mutual Information}
-        Definition of Topic Coherence (Mimno et al., 2011):
-
-        \small
-        \begin{equation*}
-            TC(t) = \sum_{m=2}^{M} \sum_{l = 1}^{m - 1} \log \frac{D(w_m, w_l) + 1}{D(w_l)}
-        \end{equation*}
-        \normalsize
-
-        Definition of Normalized Pointwise Mutual Information (Bouma, 2009):
-
-        \small
-        \begin{equation*}
-            NPMI(t) = \sum_{m=2}^{M} \sum_{l = 1}^{m - 1}
-            \frac{\log \frac{D(w_m, w_l)}{D(w_m) D(w_l)}}{- \log D(w_i, w_l)}
-        \end{equation*}
-        \normalsize
-
-        $D(w)$ = document frequency of word type $w$ \\
-        $D(w_i, w_j)$ = co-document frequency of word types $w_i$ and $w_j$
-        \newline
-
-        Definition of Mutual Information given two discrete variables:
-
-        \small
-        \begin{align*}
-            MI(D, Z) &= \sum_{d \in D}  \sum_{k \in Z} p(d, k) \log \left( \frac{p(d, k)}{p(d) p(k)} \right),
-        \end{align*}
-        \normalsize
+        \frametitle{Conclusion}
 
     \end{frame}
 
