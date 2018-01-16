@@ -1,7 +1,40 @@
 \documentclass[result.tex]{subfiles}
 
 \begin{document}
-\clearpage
-\appendix
+    \clearpage
+    \appendix
+
+    \section{State Experiment}
+
+    \subsection*{Q-Learning}
+
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=\linewidth]{../images/qlearning/state/234/all_average_game_score_over_time.png}
+        \caption{Performance of state representations trained using Q-learning.}
+        \label{fig:app_state_qlearning}
+    \end{figure}
+
+    \newpage
+
+    \subsection*{Sarsa}
+
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=\linewidth]{../images/sarsa/state/234/all_average_game_score_over_time.png}
+        \caption{Performance of state representations trained using Sarsa.}
+        \label{fig:app_state_sarsa}
+    \end{figure}
+
+    \newpage
+
+    \subsection*{Expected Sarsa}
+
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=\linewidth]{../images/expected_sarsa/state/234/all_average_game_score_over_time.png}
+        \caption{Performance of state representations trained using Expected Sarsa.}
+        \label{fig:app_state_expected_sarsa}
+    \end{figure}
 
 \end{document}
