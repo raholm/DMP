@@ -27,6 +27,12 @@
 
     \textbf{Is it better if the reward function combines reinforcement and punishment?} If this is true we expect the reward function that gives positive score rewards at the end of the episode and -1 reward at each time step has the best performance.
 
+    We also added two additional reward functions
+
+    \textbf{NegTravelNegBorderCollisionPosScore:} This function penalize -1 each time step and an extra big penalty (-10000) when the snake collides with the game border. At the end of the episode it gets a positive reward equal to the game score.
+
+    \textbf{NegDistanceNegBorderCollisionPosBodySize:} This function is similar in that it penalize significantly when the snake is colliding with the game border. However, instead of giving a fixed penalty each time step it is based on the Manhattan distance from the head of the snake to the apple. At the end of the episode it gets a positive reward equal to 100 $\times$ the length of the snake which is equivalent to the game score + 100.
+
     In order to do this experiments we also need to choose state representations and we choose to use two very different ones. The board state with the game score and the directional state with the game score, as described below.
 
     \subsection*{State Experiment}
@@ -48,7 +54,7 @@
 
     and each state is split up into 4 different states considering with/without board dimensions and with/without score, which gives 16 states in total.
 
-    To perform this experiments we also require a reward function which was decided based on the reward experiments by picking the best performing one in early testing. It turned out to be the reward function that gave 0 reward each time step and positive score as reward at the end of the episode.
+    To perform this experiments we also require a reward function which was decided based on early experiments. It turned out to be the reward function that gave 0 reward each time step and positive score as reward at the end of the episode was the most promising.
 
     \subsubsection*{Hyperparameters}
 
