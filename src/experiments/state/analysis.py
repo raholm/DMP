@@ -72,8 +72,8 @@ def analyze_aggregated_models(filenames, models, params):
 		states.append(filename.split("_")[0])
 
 	plot_model_analysis(models, states, "all", params)
-	analyze_state_with_score_models(models, states, params)
-	analyze_state_with_score_without_dim_models(models, states, params)
+	# analyze_state_with_score_models(models, states, params)
+	# analyze_state_with_score_without_dim_models(models, states, params)
 
 # analyze_board_state_models(models, states, params)
 # analyze_snake_food_state_models(models, states, params)

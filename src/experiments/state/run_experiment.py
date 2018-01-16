@@ -14,7 +14,7 @@ from src.snake.reward import ZeroTravelPosScore
 from src.snake.state import BoardScoreState, SnakeFoodScoreState, DirectionalScoreState, ShortestPathScoreState
 from src.util.io import get_project_path
 from src.util.math import compute_mean_over_time, compute_correlation
-from src.util.util import create_dir
+from src.util.util import create_dir, get_state_class_from_string, get_reward_class_from_string
 
 
 def get_rewards():
@@ -44,16 +44,16 @@ def train_sarsa_models(params):
 	train_experiment(get_sarsa_experiment(params), get_states(), get_rewards())
 
 
-def aggregate_models_by_avg(seeds, params_getter):
+def aggregate_models_by_avg(experiment_getter, seeds, params_getter):
 	aggregated_models = {}
 
 	for seed in seeds:
-		experiment = get_sarsa_experiment(params_getter(seed))
+		experiment = experiment_getter(params_getter(seed))
 
-		models, states, rewards, _ = get_models_from_experiment(experiment,
-																get_states(),
-																get_rewards(),
-																train_if_missing=True)
+		models, states, rewards, filenames = get_models_from_experiment(experiment,
+																		get_states(),
+																		get_rewards(),
+																		train_if_missing=True)
 
 		for model, state, reward in zip(models, states, rewards):
 			key = (state, reward)
@@ -66,7 +66,7 @@ def aggregate_models_by_avg(seeds, params_getter):
 
 		for seed in get_seeds()[1:]:
 			params = params_getter(seed)
-			tmp_experiment = get_sarsa_experiment(params)
+			tmp_experiment = experiment_getter(params)
 
 			tmp_models, tmp_states, tmp_rewards, _ = get_models_from_experiment(
 				tmp_experiment,
@@ -78,7 +78,7 @@ def aggregate_models_by_avg(seeds, params_getter):
 				for tmp_model, tmp_state in zip(models, states):
 					if true_state == tmp_state:
 						true_model.food_count_per_episode += tmp_model.food_count_per_episode
-						true_model.rewards_per_episode += tmp_model.rewards_count_per_episode
+						true_model.rewards_per_episode += tmp_model.rewards_per_episode
 
 		for _, model in aggregated_models.items():
 			model.food_count_per_episode = model.food_count_per_episode / len(seeds)
@@ -86,7 +86,7 @@ def aggregate_models_by_avg(seeds, params_getter):
 
 	models, states, rewards = [], [], []
 
-	for (state, reward), model in aggregated_models.keys():
+	for (state, reward), model in aggregated_models.items():
 		models.append(model)
 		states.append(state)
 		rewards.append(reward)
@@ -109,6 +109,7 @@ def experiment01(experiment, models, states, rewards, params):
 	create_dir("/".join(params["image_output"].split("/")[:-1]))
 	plt.savefig(params["image_output"])
 	# plt.show()
+	plt.close()
 
 	average_reward_over_time = map(compute_mean_over_time, rewards_per_episode)
 	average_game_score_over_time = map(compute_mean_over_time, game_score_per_episode)
@@ -122,9 +123,13 @@ def experiment01(experiment, models, states, rewards, params):
 		  (np.mean(np.abs(corr_coefs)), np.std(np.abs(corr_coefs))))
 
 	for model, state in zip(models, states):
+		state_class = get_state_class_from_string(state)
+		reward_class = get_reward_class_from_string(rewards[0])
+		experiment.env.params.state = state_class
+		experiment.env.params.reward = reward_class
+
 		print("Test Performance of %s" % (state,))
-		agent = SnakeAgent(GreedyPolicy(experiment.env),
-						   experiment.model_.Q)
+		agent = SnakeAgent(GreedyPolicy(experiment.env), model.Q)
 		scores = experiment.env.run(agent, 10000)
 		print("Avg Score: %0.03f (Std: %0.03f)" % (np.mean(scores), np.std(scores)))
 
@@ -143,7 +148,7 @@ def experiment01_qlearning():
 
 	params = get_params(42)
 	experiment = get_sarsa_experiment(params)
-	models, states, rewards = aggregate_models_by_avg(get_seeds(), get_params)
+	models, states, rewards = aggregate_models_by_avg(get_qlearning_experiment, get_seeds(), get_params)
 
 	experiment01(experiment, models, states, rewards, params)
 
@@ -162,7 +167,7 @@ def experiment01_sarsa():
 
 	params = get_params(42)
 	experiment = get_sarsa_experiment(params)
-	models, states, rewards = aggregate_models_by_avg(get_seeds(), get_params)
+	models, states, rewards = aggregate_models_by_avg(get_sarsa_experiment, get_seeds(), get_params)
 
 	experiment01(experiment, models, states, rewards, params)
 
