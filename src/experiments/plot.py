@@ -100,7 +100,7 @@ def plot_multi_average_game_score_over_time(x, game_score_per_episode, labels):
 	plt.title("Average Game Score Over Time")
 	plt.xlabel("# of episodes")
 	plt.ylabel("Game Score")
-	plt.legend(fontsize='medium')
+	plt.legend(fontsize='x-small')
 
 
 def plot_multi_average_self_collision_death_over_time(x, self_collision_death_per_episode, labels):

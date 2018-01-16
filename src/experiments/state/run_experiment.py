@@ -44,15 +44,15 @@ def train_sarsa_models(params):
 	train_experiment(get_sarsa_experiment(params), get_states(), get_rewards())
 
 
-def aggregate_models_by_avg(experiment_getter, seeds, params_getter):
+def aggregate_models_by_avg(experiment_getter, seeds, params_getter, state_getter, reward_getter):
 	aggregated_models = {}
 
 	for seed in seeds:
 		experiment = experiment_getter(params_getter(seed))
 
 		models, states, rewards, filenames = get_models_from_experiment(experiment,
-																		get_states(),
-																		get_rewards(),
+																		state_getter(),
+																		reward_getter(),
 																		train_if_missing=True)
 
 		for model, state, reward in zip(models, states, rewards):
@@ -64,21 +64,21 @@ def aggregate_models_by_avg(experiment_getter, seeds, params_getter):
 				aggregated_models[key].food_count_per_episode += model.food_count_per_episode
 				aggregated_models[key].rewards_per_episode += model.rewards_per_episode
 
-		for seed in get_seeds()[1:]:
-			params = params_getter(seed)
-			tmp_experiment = experiment_getter(params)
+	for seed in get_seeds()[1:]:
+		params = params_getter(seed)
+		tmp_experiment = experiment_getter(params)
 
-			tmp_models, tmp_states, tmp_rewards, _ = get_models_from_experiment(
-				tmp_experiment,
-				get_states(),
-				get_rewards(),
-				train_if_missing=True)
+		tmp_models, tmp_states, tmp_rewards, _ = get_models_from_experiment(
+			tmp_experiment,
+			state_getter(),
+			reward_getter(),
+			train_if_missing=True)
 
-			for true_model, true_state in zip(models, states):
-				for tmp_model, tmp_state in zip(models, states):
-					if true_state == tmp_state:
-						true_model.food_count_per_episode += tmp_model.food_count_per_episode
-						true_model.rewards_per_episode += tmp_model.rewards_per_episode
+		for true_model, true_state in zip(models, states):
+			for tmp_model, tmp_state in zip(models, states):
+				if true_state == tmp_state:
+					true_model.food_count_per_episode += tmp_model.food_count_per_episode
+					true_model.rewards_per_episode += tmp_model.rewards_per_episode
 
 		for _, model in aggregated_models.items():
 			model.food_count_per_episode = model.food_count_per_episode / len(seeds)
@@ -148,7 +148,8 @@ def experiment01_qlearning():
 
 	params = get_params(42)
 	experiment = get_sarsa_experiment(params)
-	models, states, rewards = aggregate_models_by_avg(get_qlearning_experiment, get_seeds(), get_params)
+	models, states, rewards = aggregate_models_by_avg(get_qlearning_experiment, get_seeds(), get_params, get_states(),
+													  get_rewards())
 
 	experiment01(experiment, models, states, rewards, params)
 
@@ -167,7 +168,8 @@ def experiment01_sarsa():
 
 	params = get_params(42)
 	experiment = get_sarsa_experiment(params)
-	models, states, rewards = aggregate_models_by_avg(get_sarsa_experiment, get_seeds(), get_params)
+	models, states, rewards = aggregate_models_by_avg(get_sarsa_experiment, get_seeds(), get_params, get_states(),
+													  get_rewards())
 
 	experiment01(experiment, models, states, rewards, params)
 

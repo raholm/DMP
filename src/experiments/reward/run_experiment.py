@@ -17,7 +17,8 @@ from src.snake.reward import NegTravelPosScore, PosTravelPosScore, NegDistancePo
 from src.snake.state import BoardScoreState, DirectionalScoreState
 from src.util.io import get_project_path
 from src.util.math import compute_mean_over_time, compute_correlation
-from src.util.util import filter_models_with_rewards_by_state, create_dir
+from src.util.util import filter_models_with_rewards_by_state, create_dir, get_state_class_from_string, \
+	get_reward_class_from_string
 
 
 def get_test_seed():
@@ -33,8 +34,6 @@ def get_rewards():
 	return [NegTravelPosScore,
 			ZeroTravelPosScore,
 			PosTravelPosScore,
-			NegDistancePosBodySize,
-			NegDistanceNegSelfCollisionPosBodySize,
 			NegDistanceNegBorderCollisionPosBodySize,
 			NegTravelNegBorderCollisionPosScore]
 
@@ -83,6 +82,7 @@ def experiment01(experiment, models, states, rewards, params):
 	create_dir("/".join(params["image_output"].split("/")[:-1]))
 	plt.savefig(params["image_output"])
 	# plt.show()
+	plt.close()
 
 	average_reward_over_time = map(compute_mean_over_time, rewards_per_episode)
 	average_game_score_over_time = map(compute_mean_over_time, game_score_per_episode)
@@ -95,9 +95,14 @@ def experiment01(experiment, models, states, rewards, params):
 		  (np.mean(np.abs(corr_coefs)), np.std(np.abs(corr_coefs))))
 
 	for model, state, reward in zip(models, states, rewards):
+		state_class = get_state_class_from_string(state)
+		reward_class = get_reward_class_from_string(rewards[0])
+		experiment.state = state_class
+		experiment.reward = reward_class
+
 		print("Test Performance of %s %s" % (state, reward,))
 		agent = SnakeAgent(GreedyPolicy(experiment.env),
-						   experiment.model_.Q)
+						   model.Q)
 		scores = experiment.env.run(agent, 10000)
 		print("Avg Score: %0.03f (Std: %0.03f)" % (np.mean(scores), np.std(scores)))
 
@@ -116,7 +121,8 @@ def experiment01_qlearning_board_state():
 
 	params = get_params(42)
 	experiment = get_qlearning_experiment(params)
-	models, states, rewards = aggregate_models_by_avg(get_seeds(), get_params)
+	models, states, rewards = aggregate_models_by_avg(get_qlearning_experiment, get_seeds(), get_params, get_states,
+													  get_rewards)
 
 	models, states, rewards = \
 		filter_models_with_rewards_by_state(models, states, rewards,
@@ -139,7 +145,8 @@ def experiment01_qlearning_directional_state():
 
 	params = get_params(42)
 	experiment = get_qlearning_experiment(params)
-	models, states, rewards = aggregate_models_by_avg(get_seeds(), get_params)
+	models, states, rewards = aggregate_models_by_avg(get_qlearning_experiment, get_seeds(), get_params, get_states,
+													  get_rewards)
 
 	models, states, rewards = \
 		filter_models_with_rewards_by_state(models, states, rewards,
@@ -162,7 +169,8 @@ def experiment01_sarsa_board_state():
 
 	params = get_params(42)
 	experiment = get_sarsa_experiment(params)
-	models, states, rewards = aggregate_models_by_avg(get_seeds(), get_params)
+	models, states, rewards = aggregate_models_by_avg(get_sarsa_experiment, get_seeds(), get_params, get_states,
+													  get_rewards)
 
 	models, states, rewards = \
 		filter_models_with_rewards_by_state(models, states, rewards,
@@ -185,7 +193,8 @@ def experiment01_sarsa_directional_state():
 
 	params = get_params(42)
 	experiment = get_qlearning_experiment(params)
-	models, states, rewards = aggregate_models_by_avg(get_seeds(), get_params)
+	models, states, rewards = aggregate_models_by_avg(get_sarsa_experiment, get_seeds(), get_params, get_states,
+													  get_rewards)
 
 	models, states, rewards = \
 		filter_models_with_rewards_by_state(models, states, rewards,
@@ -195,50 +204,10 @@ def experiment01_sarsa_directional_state():
 
 
 def main():
-	# train_sarsa_models()
-	# train_qlearning_models()
-	# train_models()
-	# compare_models()
-	# experiment = setup_experiment(QLearning, "reward", get_seeds()[0])
-	# experiment.train_episodes = 1000000
-	# experiment.state = get_states()[1]
-	# experiment.reward = get_rewards()[-2]
-	#
-	# experiment.load()
-	# experiment.train()
-	# experiment.save()
-	#
-	# run_experiment_in_simulator(experiment)
-
-	return
-
-
-# experiment = setup_experiment(QLearning, "reward", get_seeds()[0])
-# experiment.train_episodes = 10000
-#
-# state = DirectionalDimensionScoreState
-# reward = NegTravelPosScore
-#
-# experiment.state = state
-# experiment.reward = reward
-# experiment.train_episodes = 10000
-#
-# if experiment.has_cached_model():
-# 	print("Model is cached!")
-# else:
-# 	print("Model is not cached!")
-# 	train_experiment(experiment)
-#
-# experiment.load()
-#
-# result = test_experiment(experiment, 10000)
-#
-# for (state, reward), value in result.items():
-# 	print(state.__name__)
-# 	print(reward.__name__)
-# 	print(np.mean(value["food"]))
-#
-# run_experiment_in_simulator(experiment)
+	experiment01_qlearning_board_state()
+	experiment01_qlearning_directional_state()
+	experiment01_sarsa_board_state()
+	experiment01_sarsa_directional_state()
 
 
 if __name__ == '__main__':

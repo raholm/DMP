@@ -86,7 +86,7 @@ def analyze_aggregated_models(filenames, models, params):
 		rewards.append(filename.split("_")[1])
 
 	analyze_board_state_models(models, states, rewards, params)
-	analyze_directional_distance_state_models(models, states, rewards, params)
+	# analyze_directional_state_models(models, states, rewards, params)
 
 
 def analyze_aggregated_reward_food_count_correlations(algorithm):
