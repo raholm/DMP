@@ -3,9 +3,7 @@ from collections import defaultdict
 
 from matplotlib import pyplot as plt
 
-from src.experiments.plot import plot_multi_average_reward_over_time, plot_multi_average_actions_over_time, \
-	plot_multi_average_food_count_over_time, plot_multi_average_self_collision_death_over_time, \
-	plot_multi_average_game_score_over_time
+from src.experiments.plot import plot_multi_average_game_score_over_time
 from src.util.io import read_model
 
 

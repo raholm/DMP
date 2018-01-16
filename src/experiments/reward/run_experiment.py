@@ -11,8 +11,7 @@ from src.experiments.global_settings import get_seeds
 from src.experiments.plot import plot_multi_average_game_score_over_time
 from src.experiments.state.run_experiment import aggregate_models_by_avg
 from src.snake.agent import SnakeAgent
-from src.snake.reward import NegTravelPosScore, PosTravelPosScore, NegDistancePosBodySize, \
-	NegDistanceNegSelfCollisionPosBodySize, NegDistanceNegBorderCollisionPosBodySize, \
+from src.snake.reward import NegTravelPosScore, PosTravelPosScore, NegDistanceNegBorderCollisionPosBodySize, \
 	ZeroTravelPosScore, NegTravelNegBorderCollisionPosScore
 from src.snake.state import BoardScoreState, DirectionalScoreState
 from src.util.io import get_project_path
